@@ -32,7 +32,7 @@ Since higher-order ordinary differential equations (ODEs) can be decomposed into
 \begin{equation} \label{eqn:exp_growth} 
     \dot{x} = Ax
 \end{equation}
-where $\dot{x}$ denotes the time-derivative of $x$, $A$ is a constant (homogenous) and an initial value $x(t=0)$ is specified.  A general workflow towards a solution, regardless of the DE's order, may involve the following steps:
+where $\dot{x}$ denotes the time-derivative of $x$, $A$ is a constant (homogenous) and an initial value $x(t=0) = x_0$ is specified.  It is the exponetial growth/decay ODE.  A general workflow towards a solution, regardless of the DE's order, may involve the following steps:
 \begin{enumerate}
   \item Suppose the ansatz $x(t)=e^{\lambda t}$
   \item Derive the characteristic polynomial
@@ -41,16 +41,53 @@ where $\dot{x}$ denotes the time-derivative of $x$, $A$ is a constant (homogenou
   \item Deduce the value of the solution coefficients using the initial value/conditions
 \end{enumerate}
 
-\eqref{eqn:exp_growth} and
+In the case of \eqref{eqn:exp_growth} the characteristic polynomial is a linear expression:
+\begin{equation} 
+    \lambda = A
+\end{equation}
+and thus the solution is composed of one term:
+\begin{equation} 
+    x(t)=C_1 e^{A t}
+\end{equation}
+where the value of the coefficient $C_1$ can be deduced using the initial condition:
+\begin{equation} 
+    x_0 = C_1
+\end{equation}
+The solution of \eqref{eqn:exp_growth} is therefore:
+\begin{equation} 
+    x(t)= x_0 e^{A t}
+\end{equation}
+The solution states that the initial value $x_0$ will either growth or decay with the exponential factor $e^{A t}}$ based on whether the constant $A$ is positive or negative.
+
+
+
+
+\section{Solution of Second-Order ODEs - The Harmonic Oscillator}
+
+Consider the second-order ODE for a harmonic oscillator:
+\begin{equation} \label{eqn:exp_growth} 
+    \ddot{x} = -x
+\end{equation}
+substitution of the ansatz $x(t)=e^{\lambda t}$ into the ODE yields the characteristic equation:
+\begin{equation} \label{eqn:exp_growth} 
+    \lambda^2 = -1
+\end{equation}
+which can be solved for the roots:
+\begin{equation} \label{eqn:exp_growth} 
+    \lambda = \pm i
+\end{equation}
+
+
+
 
 \subsection{The importance of the characteristic polynomial}
 
+Note how the characteristic polynomial is derived from substitution of the ansatz $x(t)=e^{\lambda t}$ into the ODE, and the resulting roots can be real or complex.
 
-\section{Solution of Second-Order ODE - The Harmonic Oscillator}
+\section{Decomposition of Higher-Order ODEs into a Set of Coupled First-Order ODEs}
 
 
 
 
-\section{Decomposition of Higher-Order }
 
 \end{document}
