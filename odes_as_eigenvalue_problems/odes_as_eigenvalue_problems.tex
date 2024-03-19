@@ -1,8 +1,9 @@
 \documentclass[a4paper,11pt,landscape]{article}
+\usepackage{amsmath}
+\usepackage[a4paper,margin=1in,landscape]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -25,8 +26,31 @@
 \begin{abstract}
 \end{abstract}
 
-\section{}
+\section{Solution of First-Order Linear Ordinary Differential Equations}
+
+Since higher-order ordinary differential equations (ODEs) can be decomposed into a system of coupled first-order ODEs, it is instructive to cover the solution of first-order ODEs as a starting point. Consider a first-order ODE of the form:
+\begin{equation} \label{eq:test} 
+    \dot{x} = Ax
+\end{equation}
+where $\dot{x}$ denotes the time-derivative of $x$, $A$ is a constant (homogenous) and an initial value $x(t=0)$ is specified.  A general workflow towards a solution, regardless of the DE's order, may involve the following steps:
+\begin{enumerate}
+  \item Suppose the ansatz $x(t)=e^{\lambda t}}$
+  \item Derive the characteristic polynomial
+  \item Solve for the roots of the characteristic polynomial $\{\lambda_i\}$
+  \item Write the solution as a linear combination of the ansatz $e^{\lambda_i t}}$
+  \item Deduce the value of the solution coefficients using the initial value/conditions
+\end{enumerate}
+
+\eqref{eq:test}
+
+\subsection{The importance of the characteristic polynomial}
 
 
+\section{Solution of Second-Order ODE - The Harmonic Oscillator}
+
+
+
+
+\section{Decomposition of Higher-Order }
 
 \end{document}
