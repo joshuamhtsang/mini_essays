@@ -65,15 +65,15 @@ The solution states that the initial value $x_0$ will either growth or decay wit
 \section{Solution of Second-Order ODEs - The Harmonic Oscillator}
 
 Consider the second-order ODE for a harmonic oscillator:
-\begin{equation} \label{eqn:exp_growth} 
+\begin{equation} \label{eqn:ode_harmonic_oscillator} 
     \ddot{x} = -x
 \end{equation}
 substitution of the ansatz $x(t)=e^{\lambda t}$ into the ODE yields the characteristic equation:
-\begin{equation} \label{eqn:exp_growth} 
+\begin{equation} \label{eqn:characteristic_equation_of_harmonic_oscillator} 
     \lambda^2 = -1
 \end{equation}
 which can be solved for the roots:
-\begin{equation} \label{eqn:exp_growth} 
+\begin{equation} \label{eqn:complex_roots}
     \lambda = \pm i
 \end{equation}
 
@@ -82,7 +82,16 @@ which can be solved for the roots:
 
 \subsection{The importance of the characteristic polynomial}
 
-Note how the characteristic polynomial is derived from substitution of the ansatz $x(t)=e^{\lambda t}$ into the ODE, and the resulting roots can be real or complex.
+Note how the characteristic polynomial is derived from substitution of the ansatz $x(t)=e^{\lambda t}$ into the ODE, and the resulting roots (e.g. the values of $\lambda$ where say $\lambda^2 + 1 = 0$ is satisfied in the case of Equation \eqref{eqn:characteristic_equation_of_harmonic_oscillator}) can be real or complex.  In turn, these roots indicate the nature of the solution.  Since the roots are complex in the case of \eqref{eqn:ode_harmonic_oscillator}, this suggests the solution is oscillatory via Euler's relation.  A possible solution is a linear combination (verify by substitution into \eqref{eqn:ode_harmonic_oscillator}):
+
+\begin{equation} \label{eqn:solution_ode_harmonic_oscillator}
+\begin{split}
+x(t) & = A e^{it} + B e^{-it} \\
+     & = (A + B) \cos(t) + i(A - B) \sin(t))
+\end{split}
+\end{equation}
+
+The coefficients $A$ and $B$ can be deduced if initial conditions are provided.
 
 \section{Decomposition of Higher-Order ODEs into a Set of Coupled First-Order ODEs}
 
@@ -119,5 +128,9 @@ This equation has the general form:
 \bf{A} \bf{x}
 \label{eqn:general_coupled_linear_odes}
 \end{equation}
-Note that a decoupled system will have a matrix $\bf{A}$ this is diagonal.  
+Note that a decoupled system will have a matrix $\bf{A}$ that is diagonal, but in the case of system \eqref{eqn:coupled_linear_harmonic_osc_ode} it is off-diagonal and is therefore a coupled system.
+
+Note that any constant coefficients in the ODE will manifest in the bottom row of the matrix $\bf{A}$.  For example, consider the third-order ODE:
+ 
+
 \end{document}
