@@ -87,7 +87,37 @@ Note how the characteristic polynomial is derived from substitution of the ansat
 \section{Decomposition of Higher-Order ODEs into a Set of Coupled First-Order ODEs}
 
 
-
-
-
+Consider again the ODE for a harmonic oscillator:
+\begin{equation} \label{eqn:exp_growth2} 
+    \ddot{x} = -x
+\end{equation}
+Systematically assign a different indexed variable for each derivative of $x$ including the zeroth order:
+\begin{equation}
+    x_1 = x 
+\end{equation}
+\begin{equation} \label{eqn:x_2}
+    x_2 = \dot{x_1}
+\end{equation}
+The original ODE \eqref{eqn:exp_growth} can thus be written:
+\begin{equation} \label{eqn:dot_x_2}
+    \dot{x_2} = -x_1
+\end{equation}
+Equations \eqref{eqn:x_2} and \eqref{eqn:dot_x_2} can be written as a coupled linear system of equations:
+\begin{equation} 
+\frac{d}{dt} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} = 
+\begin{bmatrix}
+0 & 1 \\ -1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix}
+\label{eqn:coupled_linear_harmonic_osc_ode}
+\end{equation}
+This equation has the general form:
+\begin{equation} 
+\frac{ d \bf{x} }{dt}  = 
+\bf{A} \bf{x}
+\label{eqn:general_coupled_linear_odes}
+\end{equation}
+Note that a decoupled system will have a matrix $\bf{A}$ this is diagonal.  
 \end{document}
