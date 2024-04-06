@@ -1,0 +1,27 @@
+Install Python in Windows with:
+https://www.python.org/downloads/
+At the time of writing the version of Python is 3.12.2 (April 2024).
+
+When you create a new directory, create a Python file (*.py) and open it in VS Code,
+the bottom right of will indicate the Python interpreter you're using.
+
+Venv setup:
+https://code.visualstudio.com/docs/python/environments#_using-the-create-environment-command
+
+Using command-palette "ctrl-shift-p" or clicking on the search bar at the top and entering ">" one can select 
+the option: ">Python: Create Environment".  Just follow the recommended settings.
+
+This will create a '.venv' directory, and VS Code will automatically detect and switch the current
+interpreter to say 'Python 3.12.2 ('.venv': venv)' so you know you're in the venv.  Annoyingly,
+Powershell will not show the name of the current venv in the prompt!  But it is in the venv.  To make it actually
+show in the prompt execute the following in Powershell:
+PS C:\Users\joshu\Documents\python_mucking_around> Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+
+Then execute:
+PS C:\Users\joshu\Documents\python_mucking_around> .\.venv\Scripts\Activate.ps1
+
+Now you can do stuff with pip like:
+(.venv) PS C:\Users\joshu\Documents\python_mucking_around> pip freeze
+(.venv) PS C:\Users\joshu\Documents\python_mucking_around> pip install pygame
+
+etc.
