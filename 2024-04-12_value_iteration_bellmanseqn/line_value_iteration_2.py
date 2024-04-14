@@ -17,7 +17,7 @@ class MDP:
     def terminal_states_and_rewards(self):
         terminal_states = {
             1: 1.0,
-            self.N: 5.0
+            self.N: 75.0
         }
         return terminal_states
 
@@ -79,10 +79,20 @@ def value_iteration(mdp, num_iters):
         
         print("V_new = ", V_new)
         V = V_new
+    
+    # Print out the final policy
+    pi = {}
+    for state in mdp.states():
+        if mdp.is_end(state):
+            pi[state] = None
+        else:
+            pi[state] = max((Q(state, action), action) for action in mdp.actions(state))
+    
+    print(pi)
 
 
 if __name__ == "__main__":
-    mdp1 = MDP(10)
+    mdp1 = MDP(100)
     print([mdp1.actions(i) for i in mdp1.states()])
     print(mdp1.next_state_prob_reward(2, "left"))
     print(mdp1.next_state_prob_reward(1, "right"))
