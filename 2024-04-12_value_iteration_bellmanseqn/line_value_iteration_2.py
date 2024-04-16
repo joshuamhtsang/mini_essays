@@ -98,5 +98,4 @@ if __name__ == "__main__":
     print(mdp1.next_state_prob_reward(1, "right"))
 
     value_iteration(mdp1, 1000)
-
-    # Write a function to print out the policy too.
+    
