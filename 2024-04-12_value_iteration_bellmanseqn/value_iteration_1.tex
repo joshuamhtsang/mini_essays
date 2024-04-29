@@ -22,12 +22,14 @@
 \maketitle
 \tableofcontents
 
-\begin{abstract}
-hello grgreg 
-\end{abstract}
+\section{Value Iteration}
 
-\section{Hello}
 
+
+Defining the quality function as:
+\begin{equation} \label{eqn:quality_function_Q}
+    Q(s,a) = \sum_{s'} P(s'|s,a) \left[ R(s',s,a) + \gamma V(s') \right]
+\end{equation}
 
 
 \end{document}
