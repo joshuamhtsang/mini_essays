@@ -1,8 +1,44 @@
+https://github.com/adjacentlink/emane
+
 $ git clone git@github.com:adjacentlink/emane.git
+
+Looking in 'INSTALL' file it advises the following:
+$ ./autogen.sh && ./configure && make
+
+#####################
 
 First we need 'autoreconf' tool which is part of the 'Autotools' suite:
 https://www.geeksforgeeks.org/autoreconf-command-in-linux-with-examples/
 
+If 'autoreconf' is not installed you will get a corresponding error message when 
+running 'autogen.sh'.
+
 To install it do:
 $ sudo apt update
 $ sudo apt-get install autoconf
+
+#####################
+
+The next set of errors relate to 'LIBTOOL':
+
+src/agents/gpsdlocation/Makefile.am:1: error: Libtool library used but 'LIBTOOL' is undefined
+src/agents/gpsdlocation/Makefile.am:1:   The usual way to define 'LIBTOOL' is to add 'LT_INIT'
+src/agents/gpsdlocation/Makefile.am:1:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.
+src/agents/gpsdlocation/Makefile.am:1:   If 'LT_INIT' is in 'configure.ac', make sure
+src/agents/gpsdlocation/Makefile.am:1:   its definition is in aclocal's search path.
+
+To fix this, simply install 'libtool':
+
+$ sudo apt-get install libtool
+
+#####################
+
+checking whether the C++ compiler works... no
+configure: error: in `/home/joshua/Documents/playing_with_emane/emane':
+configure: error: C++ compiler cannot create executables
+
+To fix this simply install the g++ compiler:
+
+$ sudo apt install g++
+
+
