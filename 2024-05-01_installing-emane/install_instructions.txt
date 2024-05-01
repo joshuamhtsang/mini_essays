@@ -1,0 +1,8 @@
+$ git clone git@github.com:adjacentlink/emane.git
+
+First we need 'autoreconf' tool which is part of the 'Autotools' suite:
+https://www.geeksforgeeks.org/autoreconf-command-in-linux-with-examples/
+
+To install it do:
+$ sudo apt update
+$ sudo apt-get install autoconf
