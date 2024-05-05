@@ -72,8 +72,9 @@ No package 'libpcre' found
 
 $ sudo apt install libpcre3 libpcre3-dev
 
+##########################################
 
-
+$ sudo apt install uuid
 
 
 
