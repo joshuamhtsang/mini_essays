@@ -63,4 +63,17 @@ No package 'protobuf' found
 
 $ sudo apt  install protobuf-compiler
 
+#####################################
+
+checking for libpcre... no
+configure: error: Package requirements (libpcre) were not met:
+
+No package 'libpcre' found
+
+$ sudo apt install libpcre3 libpcre3-dev
+
+
+
+
+
 
