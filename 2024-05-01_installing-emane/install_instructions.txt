@@ -53,5 +53,14 @@ No package 'libxml-2.0' found
 Fix by installing 'libxml2-dev':
 $ sudo apt install libxml2-dev
 
+#####################################
+
+checking for protobuf... no
+configure: error: Package requirements (protobuf) were not met:
+
+No package 'protobuf' found
+
+
+$ sudo apt  install protobuf-compiler
 
 
