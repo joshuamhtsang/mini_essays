@@ -42,3 +42,16 @@ To fix this simply install the g++ compiler:
 $ sudo apt install g++
 
 
+###################################
+
+Another missing package:
+checking for libxml-2.0... no
+configure: error: Package requirements (libxml-2.0) were not met:
+
+No package 'libxml-2.0' found
+
+Fix by installing 'libxml2-dev':
+$ sudo apt install libxml2-dev
+
+
+
