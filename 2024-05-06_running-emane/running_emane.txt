@@ -1,2 +1,18 @@
 Running Emane
 
+Let's try and run the examples in 'emane-tutorial'. So do the 
+git clone:
+
+$ git clone git@github.com:adjacentlink/emane-tutorial.git
+
+Then follow this guide for Ubuntu 18.04:
+https://github.com/adjacentlink/emane-tutorial/wiki/Install
+
+There is an instruction to install the necessary packages:
+$ sudo apt install lxc bridge-utils mgen fping gpsd gpsd-clients \
+iperf multitail olsrd openssh-server python-tk python-pmw python-lxml \
+python-stdeb build-essential
+
+I replaced 'apt-get' with 'apt'...
+
+Now this is tricky, because some of the .
