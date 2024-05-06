@@ -1,0 +1,117 @@
+https://github.com/adjacentlink/emane
+
+$ git clone git@github.com:adjacentlink/emane.git
+
+Looking in 'INSTALL' file it advises the following:
+$ ./autogen.sh && ./configure && make
+
+then if that succeeds:
+
+$ sudo make install
+
+which is pretty standard procedure.  At: 
+https://emane.io/getting-started
+
+It is recommended that one installs all the dependencies with:
+
+$ sudo apt-get install autoconf automake cmake debhelper dh-python g++ gcc git \
+   libboost-program-options-dev libconfig++-dev libfftw3-dev libmbedtls-dev libpcap-dev \
+   libpcre3-dev libprotobuf-dev libsctp-dev libsqlite3-dev libtool libxml2-dev libzmq3-dev \
+   libzmq5 lsb-release pkg-config protobuf-compiler python3-dev python3-lxml python3-protobuf \
+   python3-setuptools python3-zmq sqlite3 uuid-dev
+
+If you don't install all of the above dependencies, you might still successfully 'make' the binaries
+but get runtime errors after running:
+
+$ emane
+
+After my successful install I get:
+
+$ emane
+Missing CONFIG_URL
+
+Which I assume means it's installed but is missing some input file.  Next step is
+to try the EMANE tutorials:
+
+https://github.com/adjacentlink/emane-tutorial
+
+
+
+############################################
+
+First we need 'autoreconf' tool which is part of the 'Autotools' suite:
+https://www.geeksforgeeks.org/autoreconf-command-in-linux-with-examples/
+
+If 'autoreconf' is not installed you will get a corresponding error message when 
+running 'autogen.sh'.
+
+To install it do:
+$ sudo apt update
+$ sudo apt-get install autoconf
+
+############################################
+
+The next set of errors relate to 'LIBTOOL':
+
+src/agents/gpsdlocation/Makefile.am:1: error: Libtool library used but 'LIBTOOL' is undefined
+src/agents/gpsdlocation/Makefile.am:1:   The usual way to define 'LIBTOOL' is to add 'LT_INIT'
+src/agents/gpsdlocation/Makefile.am:1:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.
+src/agents/gpsdlocation/Makefile.am:1:   If 'LT_INIT' is in 'configure.ac', make sure
+src/agents/gpsdlocation/Makefile.am:1:   its definition is in aclocal's search path.
+
+To fix this, simply install 'libtool':
+
+$ sudo apt-get install libtool
+
+############################################
+
+checking whether the C++ compiler works... no
+configure: error: in `/home/joshua/Documents/playing_with_emane/emane':
+configure: error: C++ compiler cannot create executables
+
+To fix this simply install the g++ compiler:
+
+$ sudo apt install g++
+
+
+############################################
+
+Another missing package:
+checking for libxml-2.0... no
+configure: error: Package requirements (libxml-2.0) were not met:
+
+No package 'libxml-2.0' found
+
+Fix by installing 'libxml2-dev':
+$ sudo apt install libxml2-dev
+
+#############################################
+
+checking for protobuf... no
+configure: error: Package requirements (protobuf) were not met:
+
+No package 'protobuf' found
+
+
+$ sudo apt  install protobuf-compiler
+
+#############################################
+
+checking for libpcre... no
+configure: error: Package requirements (libpcre) were not met:
+
+No package 'libpcre' found
+
+$ sudo apt install libpcre3 libpcre3-dev
+
+##############################################
+
+$ sudo apt install uuid-dev
+
+$ sudo apt-get install libpcap-dev
+
+###############################################
+
+$ sudo apt install make
+
+###############################################
