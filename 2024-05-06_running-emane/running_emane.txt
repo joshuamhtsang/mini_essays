@@ -34,5 +34,7 @@ E: Package 'olsrd' has no installation candidate
 E: Unable to locate package python-lxml
 E: Package 'python-stdeb' has no installation candidate
 
+Let's try and tackle these issues...
 
+### 'olsrd' has no installation candidate ###
 
