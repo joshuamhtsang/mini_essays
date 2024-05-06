@@ -15,4 +15,24 @@ python-stdeb build-essential
 
 I replaced 'apt-get' with 'apt'...
 
-Now this is tricky, because some of the .
+Now this is tricky, because some of the package are not available (I think in
+Ubuntu 22.04).
+
+####################################################
+
+Package python-stdeb is not available, but is referred to by another package.
+This may mean that the package is missing, has been obsoleted, or
+is only available from another source
+However the following packages replace it:
+  python3-stdeb
+
+Package olsrd is not available, but is referred to by another package.
+This may mean that the package is missing, has been obsoleted, or
+is only available from another source
+
+E: Package 'olsrd' has no installation candidate
+E: Unable to locate package python-lxml
+E: Package 'python-stdeb' has no installation candidate
+
+
+
