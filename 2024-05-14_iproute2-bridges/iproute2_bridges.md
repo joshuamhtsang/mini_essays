@@ -7,7 +7,7 @@ https://developers.redhat.com/articles/2022/04/06/introduction-linux-bridging-co
 Routerology Blog YouTube video:
 https://www.youtube.com/watch?v=oVu0O0UMBCc
 
-Pretty encyclopedia description of many 'ip' utility commands, creating bridges, veth pairs etc.
+Pretty encyclopedia description of many `ip` utility commands, creating bridges, veth pairs etc.
 https://baturin.org/docs/iproute2/
 
 # Key Points:
@@ -15,12 +15,12 @@ https://baturin.org/docs/iproute2/
 1. 'iproute2' is a collection of userspace utilities for controlling and monitoring various networking
 features in the Linux kernel.
 
-2. It's time to stop using 'ifconfig' and 'route' utilities, both are effectively superceded by the 
-utilities provided in 'iproute2'.  However, both utilities are kept in Linux distributions for
+2. It's time to stop using `ifconfig` and `route` utilities, both are effectively superceded by the 
+utilities provided in `iproute2`.  However, both utilities are kept in Linux distributions for
 backward compatibility.
 
 3. Some of the utilities provided by 'iproute2' are:
-   - ip:
+   - `ip`:
      One set of common usages is 'ip link':
      - `ip -j link show` : Shows the links/network interfaces in the root network namespace 'netns' in
      JSON format (-j flag).  This is similar to the old command 'ifconfig'.
@@ -37,9 +37,13 @@ backward compatibility.
      ```
      - `ip link set dev <blah> [up/down]` :  Set a network interface to 'up' or 'down' state.  By default, new
      interfaces are created in the 'down' state.
-     - `ip link add name <name> type bridge` :  Create a bridge interface, which is like a virtual Ethernet switch.
+     - `ip link add name <bridge_name> type bridge` :  Create a bridge interface, which is like a virtual Ethernet switch.
      - `ip link set dev <interface_name> master <bridge_name>` :  Create a virtual bridge port on the bridge e.g 'br0' 
      that connects to the designated interface.
+     - `ip link add name <name> type <type>` : The `ip link add` syntax can create much more than just bridges.  It can
+     also create other `type` of links:
+       - `veth` :  A pair of interfaces that are linked by a bi-directional pipe.  You can think of it as a network cable
+       with unattached ports at each end.
      Another set of common usages are:
      - `ip addr` : Shows layer 3 IP networking information, as opposed to 'ip link' which shows layer 2 ethernet information.
      - `ip neighbour` : Shows information about neighbours.  Only interface that are in the 'up' state may have neighbours.
@@ -50,8 +54,9 @@ backward compatibility.
      has its own isolated network stack separate from the root/default namespace and other newly created namespaces.  Namespaces 
      are so important that doing `ip -n <netns_name> <ip_style_command>` allows you to execute ip-style commands in the namespace
      `<netns_name>`.
-   - bridge:
-   - tc
+   - `bridge` : A utility for controlling and managing Linux kernel bridges.  Note that bridges can be created by the `ip` command
+   using syntax like `ip link add <br_name> type bridge`.
+   - `tc` : traffic control utility.
 
 4. 
 
@@ -73,11 +78,29 @@ lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP>
 enp5s0           DOWN           1c:1b:0d:9b:4d:c1 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
 enp4s0           UP             1c:1b:0d:9b:4d:c3 <BROADCAST,MULTICAST,UP,LOWER_UP> 
 virbr0           DOWN           52:54:00:c8:8f:16 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
-docker0          DOWN           02:42:d0:21:fb:aa <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+docker0          DOWN           02:42:d0:21:fb:aa <NO-CARRIER,BROADCAST,MULTICAST,UP>
 ```
 
 Note that the `-br` flag is not anything to do with bridges, but in fact stands for 'brieviate' i.e to 
 make brief/short.  You can see that `ip addr show` shows IP addresses (both IPv4 and IPv6) with subnet 
 prefixes while `ip link show` shows mac/ethernet addresses.
+
+
+
+# Veth pairs and connecting two network namespaces together directly (not via bridge)
+
+
+
+# Connecting two network namespaces together directly (this time via bridge!)
+
+See [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
+
+- Create two network namespaces `netns1` and `netns2`
+- Create a veth pair with link names `interface_netns1` and `interface_netns2`.  By default, both
+ends of the veth pair will reside in the default namespace.
+- Move each link to the corresponding namespaces with:
+  `ip link set dev <interface_name> netns <netns_name>`
+- Attempt ping between the two namespaces.
+
    
 
