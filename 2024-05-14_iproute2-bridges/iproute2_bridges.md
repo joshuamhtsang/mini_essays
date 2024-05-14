@@ -58,7 +58,7 @@ backward compatibility.
 
 # The difference between `ip link show` and `ip addr show`:
 
-It is instructuve to explore the differences between these two commands, and in so doing reveal something of the natural 
+It is instructive to explore the differences between these two commands, and in so doing reveal something of the  
 differences between layer 2 and layer 3 protocols.
 
 ```
@@ -75,5 +75,9 @@ enp4s0           UP             1c:1b:0d:9b:4d:c3 <BROADCAST,MULTICAST,UP,LOWER_
 virbr0           DOWN           52:54:00:c8:8f:16 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
 docker0          DOWN           02:42:d0:21:fb:aa <NO-CARRIER,BROADCAST,MULTICAST,UP> 
 ```
+
+Note that the `-br` flag is not anything to do with bridges, but in fact stands for 'brieviate' i.e to 
+make brief/short.  You can see that `ip addr show` shows IP addresses (both IPv4 and IPv6) with subnet 
+prefixes while `ip link show` shows mac/ethernet addresses.
    
 
