@@ -89,10 +89,6 @@ prefixes while `ip link show` shows mac/ethernet addresses.
 
 # Veth pairs and connecting two network namespaces together directly (not via bridge)
 
-
-
-# Connecting two network namespaces together directly (this time via bridge!)
-
 See [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
 
 - Create two network namespaces `netns1` and `netns2`
@@ -101,6 +97,10 @@ ends of the veth pair will reside in the default namespace.
 - Move each link to the corresponding namespaces with:
   `ip link set dev <interface_name> netns <netns_name>`
 - Attempt ping between the two namespaces.
+
+# Connecting two network namespaces together directly (this time via bridge!)
+
+Similar to above but create a bridge and 2 veth pairs will be needed.  See the YouTube video.
 
    
 
