@@ -12,18 +12,18 @@ https://baturin.org/docs/iproute2/
 
 # Key Points:
 
-1. 'iproute2' is a collection of userspace utilities for controlling and monitoring various networking
+1. `iproute2` is a collection of userspace utilities for controlling and monitoring various networking
 features in the Linux kernel.
 
 2. It's time to stop using `ifconfig` and `route` utilities, both are effectively superceded by the 
 utilities provided in `iproute2`.  However, both utilities are kept in Linux distributions for
 backward compatibility.
 
-3. Some of the utilities provided by 'iproute2' are:
+3. Some of the utilities provided by `iproute2` are:
    - `ip`:
-     One set of common usages is 'ip link':
-     - `ip -j link show` : Shows the links/network interfaces in the root network namespace 'netns' in
-     JSON format (-j flag).  This is similar to the old command 'ifconfig'.
+     One set of common usages is `ip link`:
+     - `ip -j link show` : Shows the links/network interfaces in the root network namespace (netns) in
+     JSON format (-j flag).  This is similar to the old command `ifconfig`.
      - `ip -c -s link show <link-name>` : Show basic and stats (-s flag) information about the interface
      `<link-name>` e.g. enp4s0 in colorful output (-c flag).  Example output:
      ```
@@ -38,7 +38,7 @@ backward compatibility.
      - `ip link set dev <blah> [up/down]` :  Set a network interface to 'up' or 'down' state.  By default, new
      interfaces are created in the 'down' state.
      - `ip link add name <bridge_name> type bridge` :  Create a bridge interface, which is like a virtual Ethernet switch.
-     - `ip link set dev <interface_name> master <bridge_name>` :  Create a virtual bridge port on the bridge e.g 'br0' 
+     - `ip link set dev <interface_name> master <bridge_name>` :  Create a virtual bridge port on the bridge e.g `br0` 
      that connects to the designated interface.
      - `ip link add name <name> type <type>` : The `ip link add` syntax can create much more than just bridges.  It can
      also create other `type` of links:
@@ -46,7 +46,7 @@ backward compatibility.
        with unattached ports at each end.
 
      Another set of common usages are:
-     - `ip addr` : Shows layer 3 IP networking information, as opposed to 'ip link' which shows layer 2 ethernet information.
+     - `ip addr` : Shows layer 3 IP networking information, as opposed to `ip link` which shows layer 2 ethernet information.
      - `ip neighbour` : Shows information about neighbours.  Only interface that are in the 'up' state may have neighbours.
      - `ip route` : Control and manage Routing tables.  Adding 'default gateways' etc. Note that the Linus kernel does not
      keep route with unreachable next hops, and thus routes using a link that goes down are permanently removed from the
@@ -104,7 +104,7 @@ ends of the veth pair will reside in the default namespace.
 - Attempt ping between the two namespaces using both IPv6 and IPv4.
 
 
-1. Create the veth pair, with one end interface named 'veth1', and the other 'veth2':
+1. Create the veth pair, with one end interface named `veth1`, and the other `veth2`:
    ```
    $ sudo ip link add veth1 type veth peer veth2
    ```
@@ -130,21 +130,21 @@ ends of the veth pair will reside in the default namespace.
    ```
    
 3. Move each end of the veth interface into a corresponding namespace:
-   Move 'veth1' into 'netns1':
+   Move `veth1` into `netns1`:
    ```
    $ sudo ip link set dev veth1 netns netns1
    ```
    Notice how the interface disappears from the default namespace once it is
-   moved into 'netns1', the other end of the veth pair is now 'if8'.:
+   moved into `netns1`, the other end of the veth pair is now `if8`.:
    ```
    $ ip link show type veth
    7: veth2@if8: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
        link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
    ```
    In addition, the metadata tells you `link-netns netns1` to indicate the other
-   end is in namespace 'netns1'.
+   end is in namespace `netns1`.
    
-   So do the same for 'veth2' and move 'veth2' into 'netsn2':
+   So do the same for `veth2` and move `veth2` into `netsn2`:
    ```
    $ sudo ip link set dev veth2 netns netns2
    ```
@@ -206,7 +206,7 @@ ends of the veth pair will reside in the default namespace.
    $ sudo ip -n netns1 addr add 192.168.88.1/24 dev veth1
    $ sudo ip -n netns2 addr add 192.168.88.2/24 dev veth2
    ```
-   You will now see the IPv4 address appearing as 'inet':
+   You will now see the IPv4 address appearing as `inet`:
    ```
    $ sudo ip -n netns2 addr show type veth
    7: veth2@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
