@@ -89,7 +89,11 @@ prefixes while `ip link show` shows mac/ethernet addresses.
 
 # Veth pairs and connecting two network namespaces together directly (not via bridge)
 
-See [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
+See valuable resource [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
+
+ |----------------------------------------|
+ | netns1 | veth1 <------> veth2 | netns2 |
+ |----------------------------------------|
 
 A quick overview of the strategy is:
 - Create a veth pair with link names `veth1` and `veth2`.  By default, both
@@ -225,9 +229,10 @@ ends of the veth pair will reside in the default namespace.
 
 
 
-# Connecting two network namespaces together directly (this time via bridge!)
+# Connecting two network namespaces together (this time via bridge!)
 
-Similar to above but create a bridge and 2 veth pairs will be needed.  See the YouTube video.
+Similar to above but create a bridge in the default namespace and 
+two veth pairs will be needed this time.  See the YouTube video.
 
    
 
