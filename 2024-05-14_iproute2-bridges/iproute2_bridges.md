@@ -91,124 +91,136 @@ prefixes while `ip link show` shows mac/ethernet addresses.
 
 See [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
 
-- Create two network namespaces `netns1` and `netns2`
-- Create a veth pair with link names `interface_netns1` and `interface_netns2`.  By default, both
+A quick overview of the strategy is:
+- Create a veth pair with link names `veth1` and `veth2`.  By default, both
 ends of the veth pair will reside in the default namespace.
-- Move each link to the corresponding namespaces with:
+- Create two network namespaces `netns1` and `netns2`.
+- Move each link interface to the corresponding namespaces with:
   `ip link set dev <interface_name> netns <netns_name>`
-- Attempt ping between the two namespaces.
+- Set device statuses to 'UP'.
+- Attempt ping between the two namespaces using both IPv6 and IPv4.
 
 
 1. Create the veth pair, with one end interface named 'veth1', and the other 'veth2':
-```
-$ sudo ip link add veth1 type veth peer veth2
-```
-You can see the veth pair is created, and their association is displayed with an '@' linking them:
-```
-$ ip link show type veth
-7: veth2@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff
-8: veth1@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/ether 76:01:2f:09:fc:bd brd ff:ff:ff:ff:ff:ff
-```
+   ```
+   $ sudo ip link add veth1 type veth peer veth2
+   ```
+   You can see the veth pair is created, and their association is displayed with an '@' linking them:
+   ```
+   $ ip link show type veth
+   7: veth2@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff
+   8: veth1@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether 76:01:2f:09:fc:bd brd ff:ff:ff:ff:ff:ff
+   ```
 
 2. Create two network namespaces `netns1` and `netns2`:
-```
-$ sudo ip netns add netns1
-$ sudo ip netns add netns2
-
-```
-You see the the two namespaces created:
-```
-$ ip netns show
-netns2
-netns1
-```
+   ```
+   $ sudo ip netns add netns1
+   $ sudo ip netns add netns2
+   ```
+   You see the the two namespaces created:
+   ```
+   $ ip netns show
+   netns2
+   netns1
+   ```
+   
 3. Move each end of the veth interface into a corresponding namespace:
-Move 'veth1' into 'netns1':
-```
-$ sudo ip link set dev veth1 netns netns1
-```
-Notice how the interface disappears from the default namespace once it is
-moved into 'netns1', the other end of the veth pair is now 'if8'.:
-```
-$ ip link show type veth
-7: veth2@if8: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
-```
-In addition, the metadata tells you `link-netns netns1` to indicate the other
-end is in namespace 'netns1'.
-
-So do the same for 'veth2' and move 'veth2' into 'netsn2':
-```
-$ sudo ip link set dev veth2 netns netns2
-```
+   Move 'veth1' into 'netns1':
+   ```
+   $ sudo ip link set dev veth1 netns netns1
+   ```
+   Notice how the interface disappears from the default namespace once it is
+   moved into 'netns1', the other end of the veth pair is now 'if8'.:
+   ```
+   $ ip link show type veth
+   7: veth2@if8: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
+   ```
+   In addition, the metadata tells you `link-netns netns1` to indicate the other
+   end is in namespace 'netns1'.
+   
+   So do the same for 'veth2' and move 'veth2' into 'netsn2':
+   ```
+   $ sudo ip link set dev veth2 netns netns2
+   ```
 
 4. Observe the veth interface ends inside the corresponding namespaces.
-This can be done by executing `ip` commands within the corresponding namespace
-with the `-n` flag:
-```
-$ sudo ip -n netns1 link show type veth
-8: veth1@if7: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/ether 76:01:2f:09:fc:bd brd ff:ff:ff:ff:ff:ff link-netns netns2
-```
+   This can be done by executing `ip` commands within the corresponding namespace
+   with the `-n` flag:
+   ```
+   $ sudo ip -n netns1 link show type veth
+   8: veth1@if7: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether 76:01:2f:09:fc:bd brd ff:ff:ff:ff:ff:ff link-netns netns2
+   ```
 
 5. Set the veth interfaces to state up:
-```
-$ sudo ip -n netns1 link set dev veth1 up
-$ sudo ip -n netns2 link set dev veth2 up
-```
-You can see this changes the "operstate" to "UP" and also displays a "LOWER_UP"
-flag to indicate the L1 (Physical layer) is up:
-```
-$ sudo ip -j -n netns1 link show type veth | jq
-"flags": [
-      "BROADCAST",
-      "MULTICAST",
-      "UP",
-      "LOWER_UP"
-    ],
-"operstate": "UP",
-```
+   ```
+   $ sudo ip -n netns1 link set dev veth1 up
+   $ sudo ip -n netns2 link set dev veth2 up
+   ```
+   You can see this changes the "operstate" to "UP" and also displays a "LOWER_UP"
+   flag to indicate the L1 (Physical layer) is up:
+   ```
+   $ sudo ip -j -n netns1 link show type veth | jq
+   "flags": [
+         "BROADCAST",
+         "MULTICAST",
+         "UP",
+         "LOWER_UP"
+       ],
+   "operstate": "UP",
+   ```
 
-6.  Ping between the 2 network namespaces using the IPv6 addresses.
-Let try pinging from `netns1` to `netns2`.  First, find the IPv6 address of
-the veth interface in `netns2` using `ip addr show`:
-```
-$ sudo ip -n netns2 addr show type veth
-7: veth2@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
-    link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
-    inet6 fe80::fc18:2dff:fe67:fd7/64 scope link 
-       valid_lft forever preferred_lft forever
-```
-Then execute a `ping` from `netns1` using the `ip netns exec` syntax:
-```
-$ sudo ip netns exec netns1 ping fe80::fc18:2dff:fe67:fd7
-PING fe80::fc18:2dff:fe67:fd7(fe80::fc18:2dff:fe67:fd7) 56 data bytes
-64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=1 ttl=64 time=0.037 ms
-64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=2 ttl=64 time=0.049 ms
-64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=3 ttl=64 time=0.048 ms
-```
-You can see that the ping does indeed go through!  Note that you cannot use the
-`-n` syntax to execute `ping`, but must use `ip netns exec <netns_name>` to do so.
-However, the question is now "how does one do a ping with IPv4?"  The answer is 
-to assign IPv4 addresses to the veth 
-interfaces.
+6. Ping between the 2 network namespaces using the IPv6 addresses.
+   Let try pinging from `netns1` to `netns2`.  First, find the IPv6 address of
+   the veth interface in `netns2` using `ip addr show`:
+   ```
+   $ sudo ip -n netns2 addr show type veth
+   7: veth2@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+       link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
+       inet6 fe80::fc18:2dff:fe67:fd7/64 scope link 
+          valid_lft forever preferred_lft forever
+   ```
+   Then execute a `ping` from `netns1` using the `ip netns exec` syntax:
+   ```
+   $ sudo ip netns exec netns1 ping fe80::fc18:2dff:fe67:fd7
+   PING fe80::fc18:2dff:fe67:fd7(fe80::fc18:2dff:fe67:fd7) 56 data bytes
+   64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=1 ttl=64 time=0.037 ms
+   64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=2 ttl=64 time=0.049 ms
+   64 bytes from fe80::fc18:2dff:fe67:fd7%veth1: icmp_seq=3 ttl=64 time=0.048 ms
+   ```
+   You can see that the ping does indeed go through!  Note that you cannot use the
+   `-n` syntax to execute `ping`, but must use `ip netns exec <netns_name>` to do so.
+   However, the question is now "how does one do a ping with IPv4?"  The answer is 
+   to assign IPv4 addresses to the veth 
+   interfaces.
 
-7.  Use `ip addr addr` inside each namespace to set IPv4 adress and mask to the
-corresponding interfaces:
-```
-$ sudo ip -n netns1 addr add 192.168.88.1/24 dev veth1
-$ sudo ip -n netns2 addr add 192.168.88.2/24 dev veth2
-```
-The ping will now work from `netns1` to `netns2`:
-```
-$ sudo ip netns exec netns1 ping 192.168.88.2
-PING 192.168.88.2 (192.168.88.2) 56(84) bytes of data.
-64 bytes from 192.168.88.2: icmp_seq=1 ttl=64 time=0.024 ms
-64 bytes from 192.168.88.2: icmp_seq=2 ttl=64 time=0.039 ms
-64 bytes from 192.168.88.2: icmp_seq=3 ttl=64 time=0.044 ms
-```
+7. Use `ip addr addr` inside each namespace to set IPv4 address and mask to the
+   corresponding interfaces:
+   ```
+   $ sudo ip -n netns1 addr add 192.168.88.1/24 dev veth1
+   $ sudo ip -n netns2 addr add 192.168.88.2/24 dev veth2
+   ```
+   You will now see the IPv4 address appearing as 'inet':
+   ```
+   $ sudo ip -n netns2 addr show type veth
+   7: veth2@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+       link/ether fe:18:2d:67:0f:d7 brd ff:ff:ff:ff:ff:ff link-netns netns1
+       inet 192.168.88.2/24 scope global veth2
+          valid_lft forever preferred_lft forever
+       inet6 fe80::fc18:2dff:fe67:fd7/64 scope link 
+          valid_lft forever preferred_lft forever
+   ```
+   The ping will now work from `netns1` to `netns2`:
+   ```
+   $ sudo ip netns exec netns1 ping 192.168.88.2
+   PING 192.168.88.2 (192.168.88.2) 56(84) bytes of data.
+   64 bytes from 192.168.88.2: icmp_seq=1 ttl=64 time=0.024 ms
+   64 bytes from 192.168.88.2: icmp_seq=2 ttl=64 time=0.039 ms
+   64 bytes from 192.168.88.2: icmp_seq=3 ttl=64 time=0.044 ms
+   ```
 
 
 
