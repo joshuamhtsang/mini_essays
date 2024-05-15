@@ -43,7 +43,7 @@ backward compatibility.
      - `ip link add name <name> type <type>` : The `ip link add` syntax can create much more than just bridges.  It can
      also create other `type` of links:
        - `veth` :  A pair of interfaces that are linked by a bi-directional pipe.  You can think of it as a network cable
-       with unattached ports at each end.
+       with unattached ports at each end.  
      Another set of common usages are:
      - `ip addr` : Shows layer 3 IP networking information, as opposed to 'ip link' which shows layer 2 ethernet information.
      - `ip neighbour` : Shows information about neighbours.  Only interface that are in the 'up' state may have neighbours.
