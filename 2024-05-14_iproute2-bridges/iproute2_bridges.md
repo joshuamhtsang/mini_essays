@@ -91,9 +91,9 @@ prefixes while `ip link show` shows mac/ethernet addresses.
 
 See valuable resource [https://baturin.org/docs/iproute2/#ip-netns-veth-connect]
 
- |----------------------------------------|
- | netns1 | veth1 <------> veth2 | netns2 |
- |----------------------------------------|
+|----------------------------------------|
+| netns1 | veth1 <------> veth2 | netns2 |
+|----------------------------------------|
 
 A quick overview of the strategy is:
 - Create a veth pair with link names `veth1` and `veth2`.  By default, both
