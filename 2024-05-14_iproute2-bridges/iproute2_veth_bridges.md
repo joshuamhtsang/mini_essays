@@ -225,7 +225,87 @@ ends of the veth pair will reside in the default namespace.
    64 bytes from 192.168.88.2: icmp_seq=3 ttl=64 time=0.044 ms
    ```
 
+# Brief discussion of routes with `ip route show`
 
+With `ip routes show` you can understand how your laptop/desktop 
+connects to the internet everyday!  On my laptop, which has a wireless
+network interface, we can see it has a designated IPv4 address '192.168.1.10/24':
+```
+$ sudo ip addr show
+3: wlp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether b4:8c:9d:54:8a:fd brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.10/24 brd 192.168.1.255 scope global dynamic noprefixroute wlp3s0
+       valid_lft 85535sec preferred_lft 85535sec
+    inet6 fe80::8011:4a2c:d6e4:e3ab/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+```
+We can see the routing table in the default namespace with `ip route show`:
+```
+$ sudo ip -j route show | jq
+[
+  {
+    "dst": "default",
+    "gateway": "192.168.1.254",
+    "dev": "wlp3s0",
+    "protocol": "dhcp",
+    "metric": 600,
+    "flags": []
+  },
+  {
+    "dst": "169.254.0.0/16",
+    "dev": "wlp3s0",
+    "scope": "link",
+    "metric": 1000,
+    "flags": []
+  },
+  {
+    "dst": "192.168.1.0/24",
+    "dev": "wlp3s0",
+    "protocol": "kernel",
+    "scope": "link",
+    "prefsrc": "192.168.1.10",
+    "metric": 600,
+    "flags": []
+  }
+]
+```
+The breakdown of the routes is as follows:
+1. "dst": "default":
+   This is the default gateway i.e the default routing rule for
+   packets that don't satisfy the other 2 rules in the routing table.
+   You can see this rule was entered using protocol "dhcp".  This
+   is how my laptop connects to the wider internet.
+2. "dst": "192.168.1.0/24":
+   This is the rule for finding other hosts on the local area network (LAN).
+   For example, another host *might* be "192.168.0.15".  This rule attached
+   to device wireless interface `wlp3s0` tells packets designated for, say,
+   "192.168.1.15" to go through this interface.
+So you can see your everyday internet access via your local domestic router is
+actually being handled by the first "default gateway" route.  
+
+For the above example of two namespaces connect by a veth pair, `ip routes` will
+also show routes with routing table of the corresponding namespaces:
+```
+$ sudo ip -j -n netns1 route show | jq
+[
+  {
+    "dst": "101.101.101.0/24",
+    "dev": "veth1",
+    "protocol": "kernel",
+    "scope": "link",
+    "prefsrc": "101.101.101.1",
+    "flags": []
+  }
+]
+
+```
+This route entry attached to device `veth1` (one end of the `veth` pair) says
+go through interface `veth1` to reach any IPv4 destination in the address range
+"101.101.101.0/24".
+
+Note that I assigned IPv4 addresses of form "101.101.101.0/24" because I did this 
+example on my laptop, whilst the example above is on my desktop, hence the different
+address ranges.
 
 
 # Connecting two network namespaces together (this time via bridge!)
