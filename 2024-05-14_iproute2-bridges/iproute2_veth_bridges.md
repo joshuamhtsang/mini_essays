@@ -317,5 +317,18 @@ address ranges.
 Similar to above but create a bridge in the default namespace and 
 two veth pairs will be needed this time.  See the YouTube video.
 
-| netns1 | <--veth1--> | bridge1 (in default ns ) | <--veth2--> | netns2 | 
+| netns1 | <--veth1--> | br0 (in default ns ) | <--veth2--> | netns2 | 
+
+The general workflow is as follows:
+1. Create the bridge (`br0`) in the default namespace
+2. Create 2 ports in the bridge (`br0`)
+3. Create 2 network namespaces (`ns1` and `ns2`)
+4. Create 2 veth pairs to connect each of the new network namespaces
+   to the bridge (`br0`)
+
+
+# Creating VLAN Interfaces
+
+See: https://baturin.org/docs/iproute2/#ip-link-add-vlan
+
 
