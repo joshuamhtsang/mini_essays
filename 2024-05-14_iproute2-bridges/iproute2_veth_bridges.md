@@ -317,5 +317,5 @@ address ranges.
 Similar to above but create a bridge in the default namespace and 
 two veth pairs will be needed this time.  See the YouTube video.
 
-   
+| netns1 | <--veth1--> | bridge1 (in default ns ) | <--veth2--> | netns2 | 
 
