@@ -280,6 +280,10 @@ The breakdown of the routes is as follows:
    For example, another host *might* be "192.168.0.15".  This rule attached
    to device wireless interface `wlp3s0` tells packets designated for, say,
    "192.168.1.15" to go through this interface.
+3. "dst": "169.254.0.0/16":
+   This is actually a rule for the 'link local' address block, part of the
+   Automatic Private IP Addressing (APIPA) standard for when DHCP doesn't
+   yield an address then the host is given an address from this block.
 So you can see your everyday internet access via your local domestic router is
 actually being handled by the first "default gateway" route.  
 
