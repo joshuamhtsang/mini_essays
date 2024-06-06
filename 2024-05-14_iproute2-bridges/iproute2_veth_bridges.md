@@ -320,14 +320,12 @@ two veth pairs will be needed this time.  See the YouTube video.
 [https://wiki.archlinux.org/title/network_bridge]
 
 
-| netns1 | <--veth1--> | br0 (in default ns ) | <--veth2--> | netns2 | 
+| ns1 | <--veth1--> | br0 (in default ns ) | <--veth2--> | ns2 | 
 
 The general workflow is as follows:
 1. Create the bridge (`br0`) in the default namespace
-2. Create 2 ports in the bridge (`br0`)
-3. Create 2 network namespaces (`ns1` and `ns2`)
-4. Create 2 veth pairs to connect each of the new network namespaces
-   to the bridge (`br0`)
+2. Create 2 network namespaces (`ns1` and `ns2`)
+3. 
 
 ```
 sudo ip link add name br0 type bridge
