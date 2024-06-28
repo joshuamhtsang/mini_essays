@@ -23,11 +23,20 @@
 
 \section{Key Concepts}
 
+Consider the problem shown in Figure \ref{fig:1d-grid-world-problem-statement} where an agent is located in one of the grid positions.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{images/1d-grid-world-problem-statement.png}
+    \caption{1D Grid World Markov Decision Problem with an assigned reward of $+1$ in state $s_{10}$.  The agent currently sits in state $s_4$ and the goal of the problem is for the agent to take actions to maximise its reward.}
+    \label{fig:1d-grid-world-problem-statement}
+\end{figure}
+
+
 \begin{itemize}
-    \item State
-    \item Action
-    \item Policy
-    \item Value
+    \item State Space and State: The finite State Space of a system is denoted $S$ where a state $s$ denotes a certain configuration of the system i.e. $s \in S$.  (describe is relation of 1D grid world...)
+    \item Actions: For each state, $s_i$, that the system finds itself in a set of available actions, ${a_k}$, can be taken that transition the system to another state, $s_j$.  
+    \item Policy: $\pi$
+    \item Reward: 
   \end{itemize}
 
 \section{Value Iteration}
@@ -36,6 +45,14 @@ Defining the quality function as:
 \begin{equation} \label{eqn:quality_function_Q}
     Q(s,a) = \sum_{s'} P(s'|s,a) \left[ R(s',s,a) + \gamma V(s') \right]
 \end{equation}
+where $s'$ are the neighbouring states to the current state, $s$.
 
+
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{images/iters-of-value-iteration-1d-grid-world-code-output.png}
+    \caption{Iterations of the value iteration algorithm.}
+    \label{fig:iters-of-value-iteration-1d-grid-world-code-output}
+\end{figure}
 
 \end{document}

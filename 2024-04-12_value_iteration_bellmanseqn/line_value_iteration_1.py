@@ -63,7 +63,7 @@ def value_iteration(mdp, num_iters):
             else:
                 V_new[state] = max(Q(state, action) for action in mdp.actions(state))
         
-        print(V_new)
+        print(f'Iteration = {iteration:3d}, V_new = {V_new}')
         V = V_new
 
 
@@ -73,4 +73,4 @@ if __name__ == "__main__":
     print(mdp1.next_state_prob_reward(2, "left"))
     print(mdp1.next_state_prob_reward(1, "right"))
 
-    value_iteration(mdp1, 1000)
+    value_iteration(mdp1, 20)
