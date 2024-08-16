@@ -28,7 +28,7 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
 
 \begin{figure}
     \includegraphics[width=\textwidth]{images/1d-grid-world-problem-statement.png}
-    \caption{1D Grid World MDP with an assigned reward of $+1$ in state $s_{10}$.  The agent currently sits in state $s_4$ and the goal of the problem is for the agent to take actions to maximise its reward.}
+    \caption{1D Grid World MDP with an assigned reward of $+1$ in state $s_{10}$.  The agent currently sits in state $s_4$ and the goal of the problem is for the agent to take actions to maximise its reward.  At each state, there is a negative reward/cost of $-1$ for taking actions (move left) or (move right).  Drawn with draw.io and saved in Google Drive as 1D\_grid\_world.drawio.}
     \label{fig:1d-grid-world-problem-statement}
 \end{figure}
 
@@ -40,15 +40,17 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
     \begin{equation} \label{eqn:policy_formal_definition}
         \pi(s,a) = P(a=a|s=s)
     \end{equation}
-    which is the probability of taking action $a$ given the system is in state $s$.  As a foreshadow, policy functions are often expressed as an $\argmax_a$ as follows:
+    which is the probability of taking action $a$ given the system is in state $s$.  The goal of Reinforcement Learning is to learn the optimal policy $\pi(s,a)$ to maximise future rewards (explained next). As a foreshadow, policy functions are often expressed as an $\argmax_a$ as follows:
     \begin{equation} \label{eqn:value_iteration_foreshadow}
         \pi(s,a) = \argmax_a Q(s, a)
     \end{equation}
     i.e. an $\argmax$ over the available actions which returns the argument (action) that returns the maximum value for the quality function $Q$ (defined later).
-    \item Reward: 
-  \end{itemize}
+    \item Reward: Numerical reward can be associated with certain states and actions, represented as $R(s',s,a)$ where $s'$ are the neighbouring states and $a$ are the actions available at the current state $s$.  In the case of Figure \ref{fig:1d-grid-world-problem-statement}, there is a fixed reward of $+1$ at state $s_{10}$ and each action of (move left) or (move right) has a reward of $-1$.
+\end{itemize}
 
-\section{Value Iteration}
+\section{State Value Function, Bellman's Equation and the Principle of Optimality}
+
+An important concept in Reinforcement Learning is the State Value Function, $V(s)$.
 
 Defining the quality function as:
 \begin{equation} \label{eqn:quality_function_Q}
@@ -57,11 +59,19 @@ Defining the quality function as:
 where $s'$ are the neighbouring states to the current state, $s$.
 
 
+\section{Value Iteration}
+
+
+
+
 
 \begin{figure}
     \includegraphics[width=\textwidth]{images/iters-of-value-iteration-1d-grid-world-code-output.png}
     \caption{Iterations of the value iteration algorithm.}
     \label{fig:iters-of-value-iteration-1d-grid-world-code-output}
 \end{figure}
+
+
+\section{Policy Iteration}
 
 \end{document}
