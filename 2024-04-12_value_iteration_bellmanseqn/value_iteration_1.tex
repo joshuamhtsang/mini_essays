@@ -28,7 +28,7 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
 
 \begin{figure}
     \includegraphics[width=\textwidth]{images/1d-grid-world-problem-statement.png}
-    \caption{1D Grid World MDP with an assigned reward of $+1$ in state $s_{10}$.  The agent currently sits in state $s_4$ and the goal of the problem is for the agent to take actions to maximise its reward.  At each state, there is a negative reward/cost of $-1$ for taking actions (move left) or (move right).  Drawn with draw.io and saved in Google Drive as 1D\_grid\_world.drawio.}
+    \caption{1D Grid World MDP with an assigned reward of $+10$ in state $s_{10}$, termed the terminal state.  The agent currently sits in state $s_4$ and the goal of the problem is for the agent to take actions to maximise its reward.  At each state other than the terminal state, there is a negative reward of $-1$.  Drawn with draw.io and saved in Google Drive as 1D\_grid\_world.drawio.}
     \label{fig:1d-grid-world-problem-statement}
 \end{figure}
 
@@ -45,7 +45,17 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
         \pi(s,a) = \argmax_a Q(s, a)
     \end{equation}
     i.e. an $\argmax$ over the available actions which returns the argument (action) that returns the maximum value for the quality function $Q$ (defined later).
-    \item Reward: Numerical reward can be associated with certain states and actions, represented as $R(s',s,a)$ where $s'$ are the neighbouring states and $a$ are the actions available at the current state $s$.  In the case of Figure \ref{fig:1d-grid-world-problem-statement}, there is a fixed reward of $+1$ at state $s_{10}$ and each action of (move left) or (move right) has a reward of $-1$.
+    \item Reward: Numerical reward can be associated with certain states and actions, represented as $R_t$ for the current time step.  In the case of Figure \ref{fig:1d-grid-world-problem-statement}, there is a fixed reward of $+10$ at state $s_{10}$ and the other states have a reward of $-1$.  The goal of RL can be considered to be finding the sequence of actions that maximise the sum of rewards to achieve a sucessful episode i.e. the agent reaches the terminal state $s_{10}$.
+    \item Episodes:  MDPs have the characteristic of being finite i.e. they end within a finite number of time steps, denoted $T$.  More specifically, an episode is a sequence of states, actions and rewards that start at some state and end in the terminal state.
+    \item Return or "Future Gains":  Usually denoted $G_t$ it is the sum of rewards gained by the agent {\it after} time step $t$, define as:
+    \begin{equation} \label{eqn:return_G_t}
+        G_t = R_{t+1} + R_{t+2} + ... + R_{T}
+    \end{equation}
+    It is possible to introduce a discount rate $\gamma \in [0,1]$ that diminishes the rewards gained further in the future:
+    \begin{equation} \label{eqn:return_G_t}
+        G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+2} + ... + \gamma^{T-1-t} R_{T}
+    \end{equation}
+    note how the power of $\gamma$ in the final term is $T-1-t$ and {\it not} $T$, a little thought makes this clear (for example, try write down $G_4$ where $T=8$).
 \end{itemize}
 
 \section{State Value Function, Bellman's Equation and the Principle of Optimality}
@@ -61,7 +71,7 @@ where $s'$ are the neighbouring states to the current state, $s$.
 
 \section{Value Iteration}
 
-
+Value iteration allows one to assign state values to each state through repeated, iterative application of the value function, and the optimal policy is extracted at the end.  
 
 
 
