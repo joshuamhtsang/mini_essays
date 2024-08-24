@@ -105,7 +105,7 @@ Recall that epsiodes are a sequence of states, actions and rewards that end in t
 
 \section{State Value Function, Bellman's Equation and the Principle of Optimality}
 
-An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from state $s$'s neighbouring states, $s'$. Since $\pi{s,a}$ encapsulates the probability of transitioning to neighbouring states $s'$ from state $s$, and in turn the state values in those neighbouring states $v_\pi(s')$, therefore the policy $\pi{s,a}$ influences the expected returns.  In fact, it's prudent to think of the state value function as a function to link the state values of all states together.
+An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(s,a)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from state $s$'s neighbouring states, $s'$. (WRONG!  The $\pi(a|s)$ bit at the front I think acts like a filter function, but I'm not sure)  Since $\pi(s,a)$ encapsulates the probability of transitioning to neighbouring states $s'$ from state $s$, and in turn the state values in those neighbouring states $v_\pi(s')$, therefore the policy $\pi{s,a}$ influences the expected returns.  In fact, it's prudent to think of the state value function as a function to link the state values of all states together.
 
 \begin{equation} \label{eqn:bellmans_equation_part1}
 \begin{split}
@@ -134,9 +134,9 @@ Equation \ref{eqn:bellmans_equation_part3} allows us to calculate the expected r
 
 Don't be put off by the numerous probability `given' symbols like $P(A|B)$, since usually $B$ is the current state and action taken, it therefore just means `the probability of transitioning to $A$ given the agent is in state $s$ and taken action $a$'.  
 
-Note that the probabilities $P(s',r|s,a)$ are nothing to do with the policy probabilities $\pi(s,a)$ but are transition probabilities intrinsic to the Markov process.  For instance, we could introduce a `drunken man' effect into the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's only a 0.8 chance of the intended action yielding the intended outcome.  So in this case, if we're in state $s4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these effects.
+Note that the probabilities $P(s',r|s,a)$ are nothing to do with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the Markov process.  For instance, we could introduce a `drunken man' effect into the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's only a 0.8 chance of the intended action yielding the intended outcome.  So in this case, if we're in state $s4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these effects.
 
-
+(Talk about Gambler's problem and the transition probabilities in that.)
 
 
 
