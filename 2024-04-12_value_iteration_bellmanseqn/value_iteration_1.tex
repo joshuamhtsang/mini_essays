@@ -76,7 +76,7 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
 
 \subsection{Markov Reward Process vs Markov Decision Process}
 
-It is instructive to discuss Markov Reward Process (MRP) which are simpler than a Markov Decision Process (MDP).  This discussion helps consolidate concepts surrounding transition probabilites, policies and action values.  In short, an MDP is essentially an MRP with actions and thus an MRP will still have states, rewards and transition probabilties.  The transition probabilities encapsulate the dynamics of the process or the effects of the environment.  
+It is instructive to discuss Markov Reward Process (MRP) which are simpler than a Markov Decision Process (MDP).  This discussion helps consolidate concepts surrounding transition probabilites, policies and action values.  In short, an MDP is essentially an MRP {\it with actions} and thus an MRP will still have states, rewards and transition probabilties.  The transition probabilities encapsulate the dynamics of the process or the effects of the environment.  
 
 Consider the MRP shown in Figure \ref{fig:slippery-world-mrp} which describes a `slippery world' MRP where the transition probabilities of moving to adjacent states is only succesful with probability 0.8, with a 0.2 chance of remaining in the same state.
 
@@ -149,7 +149,7 @@ Solving the matrix is roughly $O(N^3)$ where $N$ is the number of states.
 
 
 
-\section{Playing with Episodes}
+\section{Playing with Episodes of an MDP}
 
 Recall that epsiodes are a sequence of states, actions and rewards that end in the terminal state.  Each episode yields a return/gain at $T$, which is $G_T$.  To clarify concepts and develop some intuitive, consider a few episodes for the Grid World system in Figure \ref{fig:1d-grid-world-problem-statement}.  The actions are $a \in [\text{LEFT}, \text{RIGHT}]$
 
@@ -183,19 +183,20 @@ Recall that epsiodes are a sequence of states, actions and rewards that end in t
 
 \section{State Value Function, Bellman's Equation and the Principle of Optimality}
 
-An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(s,a)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from the neighbouring states, $v_{\pi}(s')$.  In fact, this is why the Bellman equation in equation (\ref{eqn:bellmans_equation_part3}) has $v_{\pi}(s)$ on the LHS and $v_{\pi}(s')$'s on the RHS.
+An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(a|s)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from the neighbouring states, $v_{\pi}(s')$.  In fact, this is why the Bellman equation in equation (\ref{eqn:bellmans_equation_part3}) has $v_{\pi}(s)$ on the LHS and $v_{\pi}(s')$'s on the RHS.
 
-Since $\pi(s,a)$ encapsulates the current policy's probability of taking action $a$ given the current state is $s$ (recall equation \ref{eqn:policy_formal_definition}), the policy $\pi(s,a)$ thus influences the expected returns of being in the current state $s$.  In fact, it's prudent to think of the state value function as a function to link the state values of all states together.
+Since the policy $\pi(a|s)$ encapsulates the current policy's probability of taking action $a$ given the current state is $s$ (recall equation \ref{eqn:policy_formal_definition}), it thus influences the expected returns of being in the current state $s$.  In fact, it's prudent to think of the state value function as a function that ultimately links the state values of all states together.
 
+The state value function, $v_{\pi}(s)$ of an MDP is the expected return starting from state $s$ and following the policy $\pi$:
 \begin{equation} \label{eqn:bellmans_equation_part1}
 \begin{split}
         v_\pi (s) &= \mathbb{E}[G_t|s] \\
         &= \sum_{a} \pi(a|s) \mathbb{E} [G_t|s,a]
 \end{split}
 \end{equation}
+This is fairly intuitive, the state value is equal to the sum of the expected returns from all available actions $a$ at state $s$ weighted by the present policy probability distribution, $\pi$.
 
 Using Equation (\ref{eqn:return_G_t_like_bellmans_eqn}) we can rewrite $\mathbb{E} [G_t|s, a]$ as:
-
 \begin{equation} \label{eqn:bellmans_equation_part2}
 \begin{split}
         \mathbb{E} [G_t|s, a] &= \mathbb{E} [R_{t+1} + \gamma G_{t+1}|s, a] \\
@@ -204,13 +205,13 @@ Using Equation (\ref{eqn:return_G_t_like_bellmans_eqn}) we can rewrite $\mathbb{
 \end{split}
 \end{equation}
 
-Hence the final expression is:
+This is in fact the action value function as discussed in the next section.  The final expression after substitution back into equation (\ref{eqn:bellmans_equation_part1}) is:
 \begin{equation} \label{eqn:bellmans_equation_part3}
 \begin{split}
         v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{split}
 \end{equation}
-Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP.
+Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP given the current policy, $\pi$, which may not yet be optimal.  It is the goal of RL to find the optimal policy, $\pi_*$, via methods like General Policy Iteration (GPI), Policy Iteration and Value Iteration to discover optimal policies.
 
 Note that the probabilities $P(s',r|s,a)$ are not to be confused with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the MDP that capture the dynamics of the environment.  Note that for an MRP the state transition probabilties are merely $P(s'|s)$ while for an MDP (which includes actions) it is $P(s',r|s,a)$ which encapsulates probabilties to transition into $s'$ for a given action $a$.  For instance, we could introduce a strong fan effect that blows left into state $s_4$ of the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's now a 0.2 chance of the agent losing its footing/grip and will be blown back to state $s_3$.  These envionmental dynamics/effects are captured in the transition probabilities of the MDP.  So in this case, if we're in state $s_4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these environmental/dynamic effects.
 
