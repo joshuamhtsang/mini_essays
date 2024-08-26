@@ -36,15 +36,18 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
 \begin{itemize}
     \item State Space and State: The finite State Space of a system is denoted $S$ where a state $s$ denotes a certain configuration of the system i.e. $s \in S$.  For example, in Figure \ref{fig:1d-grid-world-problem-statement} the agent is currently in state $s_4$, with the neighbouring states, $\{s'\}$, being $s_3$ and $s_5$.
     \item Actions: For each state, $s_i$, that the system resides in a set of available actions, $\{a_k\}$, can be taken that transition the system to another state, $s_j$.  For Figure \ref{fig:1d-grid-world-problem-statement} the available actions at state $s_4$ are \verb|(move left)| and \verb|(move right)|.  One could think of a graph where nodes are states and the edges are actions.
-    \item Policy: A policy, denoted $\pi$, dictates the action to take for a given state.  It is often written as a function $\pi(s, a)$ where it is formally defined as:
+    \item Policy: A policy, denoted $\pi$, is a distribution over actions given states.  It is often written as a function $\pi(a|s)$ or $\pi(s, a)$ where it is formally defined as:
     \begin{equation} \label{eqn:policy_formal_definition}
-        \pi(s,a) = P(A_t=a|S_t=s)
+        \pi(a|s) = \pi(s,a) = P(A_t=a|S_t=s)
     \end{equation}
-    which is the probability of taking action $a$ given the system is in state $s$ at time step $t$. The goal of RL is to learn the optimal policy $\pi(s,a)$ to maximise future rewards/returns (explained next). As a foreshadow, policy functions are often expressed as an $\argmax_a$ as follows:
+    which is the probability of taking action $a$ given the system is in state $s$ at time step $t$. As such, $\pi(s, a)$ returns a probability value in the range $[0,1]$. The goal of RL is to learn the optimal policy $\pi(s,a)$ to maximise future rewards/returns (explained next). As a foreshadow, {\it optimal} policy functions are often expressed as an $\argmax_a$ as follows:
     \begin{equation} \label{eqn:value_iteration_foreshadow}
-        \pi(s,a) = \argmax_a \sum_{s'} P(s',r|s,a)[r + \gamma v_{\pi}(s')]
+    \begin{split}
+        \pi_{*}(s,a) &= \argmax_a \sum_{s'} \sum_{r} P(s',r|s,a)[r + \gamma v_{\pi}(s')] \\
+        &= \argmax_a q_{*} (s,a)
+    \end{split}
     \end{equation}
-    i.e. the policy function returns the action $a$ that transitions the agent to the neighbouring state $s'$ that yields the maximum transition-probability-weighted sum of the returns.
+    i.e. the optimal policy function returns the action $a$ that transitions the agent to the neighbouring state $s'$ that yields the maximum transition-probability-weighted sum of the returns, or in other words, the maximum {\it action value} as discussed around equation (\ref{eqn:action_value_function_definition}).
     \item Reward: Numerical reward can be associated with certain states and actions, represented as $R_t$ for the current time step.  In the case of Figure \ref{fig:1d-grid-world-problem-statement}, there is a fixed reward of $+10$ at state $s_{10}$ and the other states have a reward of $-1$.  The goal of RL can be considered to be finding the sequence of actions that maximise the sum of rewards to achieve a sucessful episode i.e. the agent reaches the terminal state $s_{10}$.
     \item Episodes:  MDPs have the characteristic of being finite i.e. they end within a finite number of time steps, denoted $T$.  More specifically, an episode is a sequence of states, actions and rewards that start at some state and end in the terminal state.
     \item Return or "Future Gains":  Usually denoted $G_t$ it is the sum of rewards gained by the agent {\it after} time step $t$, define as:
@@ -70,6 +73,81 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
     \end{equation}
     Expression (\ref{eqn:return_G_t_like_bellmans_eqn}) links the current return, $G_t$, to the return at the next time step, $G_{t+1}$.
 \end{itemize}
+
+\subsection{Markov Reward Process vs Markov Decision Process}
+
+It is instructive to discuss Markov Reward Process (MRP) which are simpler than a Markov Decision Process (MDP).  This discussion helps consolidate concepts surrounding transition probabilites, policies and action values.  In short, an MDP is essentially an MRP with actions and thus an MRP will still have states, rewards and transition probabilties.  The transition probabilities encapsulate the dynamics of the process or the effects of the environment.  
+
+Consider the MRP shown in Figure \ref{fig:slippery-world-mrp} which describes a `slippery world' MRP where the transition probabilities of moving to adjacent states is only succesful with probability 0.8, with a 0.2 chance of remaining in the same state.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{images/slippery_world_mrp.png}
+    \caption{The Slippery World MRP where there's a 0.2 chance of remaining in the present state as the agent can slip and fall, making no movement progress.  There are still rewards associated with the states, hence the name Markov {\it Reward} Process.  Drawn with draw.io and saved in Google Drive.}
+    \label{fig:slippery-world-mrp}
+\end{figure}
+
+The state transition matrix, ${\bf P}$, for the MRP can be written:
+\begin{equation} \label{eqn:state_transition_matrix_for_slippery_world}
+\begin{split}
+        {\bf P} &=  
+        \begin{pmatrix}
+        P(s_1|s_1) & P(s_2|s_1) & P(s_3|s_1) & \hdots & P(s_N|s_1) \\
+        P(s_1|s_2) & P(s_2|s_2) & P(s_3|s_2) & \hdots & P(s_N|s_2) \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        P(s_1|s_N) & P(s_2|s_N) & P(s_3|s_N) & \hdots & P(s_N|s_N)
+        \end{pmatrix} \\
+        &= 
+        \begin{pmatrix}
+        0.2 & 0.8 & 0.0 & 0.0 & 0.0 \\
+        0.8 & 0.2 & 0.8 & 0.0 & 0.0 \\
+        0.0 & 0.8 & 0.2 & 0.8 & 0.0 \\
+        0.0 & 0.0 & 0.8 & 0.2 & 0.8 \\
+        0.0 & 0.0 & 0.0 & 0.8 & 0.2 
+        \end{pmatrix}
+\end{split}
+\end{equation}
+
+Knowing these state transition probabilties allows trajectories to be sampled and expect returns to be calculated.  Like an MDP, state values for each state, $v(s)$, can be computed.  In fact, the state values can be computed analytically using the linear equation:
+\begin{equation} \label{eqn:linear_eqn_for_mrp}
+\begin{split}
+        \begin{pmatrix}
+            v(s_1) \\
+            v(s_2) \\
+            \vdots \\
+            v(s_5)
+        \end{pmatrix} &=
+        \begin{pmatrix}
+            r(s_1) \\
+            r(s_2) \\
+            \vdots \\
+            r(s_5)
+        \end{pmatrix} +
+        \gamma 
+        \begin{pmatrix}
+            P(s_1|s_1) & P(s_2|s_1) & P(s_3|s_1) & \hdots & P(s_5|s_1) \\
+            P(s_1|s_2) & P(s_2|s_2) & P(s_3|s_2) & \hdots & P(s_5|s_2) \\
+            \vdots & \vdots & \vdots & \ddots & \vdots \\
+            P(s_1|s_5) & P(s_2|s_5) & P(s_3|s_5) & \hdots & P(s_5|s_5)
+        \end{pmatrix}
+        \begin{pmatrix}
+            v(s_1) \\
+            v(s_2) \\
+            \vdots \\
+            v(s_5)
+        \end{pmatrix} 
+        \\
+        {\bf v} &= {\bf r} + \gamma {\bf P} {\bf v} 
+\end{split}
+\end{equation}
+which allows the state values to be solved using some linear algebra as:
+\begin{equation} \label{eqn:inverse_of_linear_eqn_for_mrp}
+\begin{split}
+    {\bf v} = ({\bf I} - \gamma {\bf P})^{-1} {\bf r}
+\end{split}
+\end{equation}
+Solving the matrix is roughly $O(N^3)$ where $N$ is the number of states.
+
+
 
 \section{Playing with Episodes}
 
@@ -105,7 +183,9 @@ Recall that epsiodes are a sequence of states, actions and rewards that end in t
 
 \section{State Value Function, Bellman's Equation and the Principle of Optimality}
 
-An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(s,a)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from state $s$'s neighbouring states, $s'$. (WRONG!  The $\pi(a|s)$ bit at the front I think acts like a filter function, but I'm not sure)  Since $\pi(s,a)$ encapsulates the probability of transitioning to neighbouring states $s'$ from state $s$, and in turn the state values in those neighbouring states $v_\pi(s')$, therefore the policy $\pi{s,a}$ influences the expected returns.  In fact, it's prudent to think of the state value function as a function to link the state values of all states together.
+An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(s,a)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from the neighbouring states, $v_{\pi}(s')$.  In fact, this is why the Bellman equation in equation (\ref{eqn:bellmans_equation_part3}) has $v_{\pi}(s)$ on the LHS and $v_{\pi}(s')$'s on the RHS.
+
+Since $\pi(s,a)$ encapsulates the current policy's probability of taking action $a$ given the current state is $s$ (recall equation \ref{eqn:policy_formal_definition}), the policy $\pi(s,a)$ thus influences the expected returns of being in the current state $s$.  In fact, it's prudent to think of the state value function as a function to link the state values of all states together.
 
 \begin{equation} \label{eqn:bellmans_equation_part1}
 \begin{split}
@@ -130,24 +210,28 @@ Hence the final expression is:
         v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{split}
 \end{equation}
-Equation \ref{eqn:bellmans_equation_part3} allows us to calculate the expected return value for each state in the MDP, and in turn allows an optimal policy to be extracted. 
+Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP.
 
-Don't be put off by the numerous probability `given' symbols like $P(A|B)$, since usually $B$ is the current state and action taken, it therefore just means `the probability of transitioning to $A$ given the agent is in state $s$ and taken action $a$'.  
+Note that the probabilities $P(s',r|s,a)$ are not to be confused with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the MDP that capture the dynamics of the environment.  Note that for an MRP the state transition probabilties are merely $P(s'|s)$ while for an MDP (which includes actions) it is $P(s',r|s,a)$ which encapsulates probabilties to transition into $s'$ for a given action $a$.  For instance, we could introduce a strong fan effect that blows left into state $s_4$ of the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's now a 0.2 chance of the agent losing its footing/grip and will be blown back to state $s_3$.  These envionmental dynamics/effects are captured in the transition probabilities of the MDP.  So in this case, if we're in state $s_4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these environmental/dynamic effects.
 
-Note that the probabilities $P(s',r|s,a)$ are nothing to do with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the Markov process.  For instance, we could introduce a `drunken man' effect into the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's only a 0.8 chance of the intended action yielding the intended outcome.  So in this case, if we're in state $s4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these effects.
+Now is a good time to mention model-based and model-free processes.
 
 (Talk about Gambler's problem and the transition probabilities in that.)
 
 
 
-\section{The Quality Function}
+\section{The Action Value Function and Optimal Policies}
 
-The quality function is often defined as the sums in Equation (\ref{eqn:bellmans_equation_part3}):
-\begin{equation} \label{eqn:quality_function_Q}
-    Q(s,a) = \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
+The action value function, denoted $q_{\pi}$, is defined as the inner sums in Equation (\ref{eqn:bellmans_equation_part3}):
+\begin{equation} \label{eqn:action_value_function_definition}
+    q_{\pi}(s,a) = \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{equation}
-where $s'$ are the neighbouring states to the current state, $s$.  
+where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and action value functions.  Action value functions include the action in the argument, naturally!
 
+Equation (\ref{eqn:action_value_function_definition}) allows the optimal policy, $\pi_{*}$, to be written succinctly as:
+\begin{equation} \label{eqn:optimal_policy_wrt_action_values}
+    \pi_{*}(s) = \argmax_a q_{\pi}(s,a)
+\end{equation}
 
 \section{Value Iteration}
 
