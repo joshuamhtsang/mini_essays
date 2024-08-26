@@ -181,7 +181,7 @@ Recall that epsiodes are a sequence of states, actions and rewards that end in t
   Note that this episode yields $G_T = +2$, it is lower than Episode Example 1 because at $t=5$ it backtracks by going LEFT which caused it to require a longer path, and thus suffer more from the $R_t = -1$ penalties for the non-terminal states.
 \end{itemize}
 
-\section{State Value Function, Bellman's Equation and the Principle of Optimality}
+\section{State Value Function and Bellman's Equation}
 
 An important concept in RL is the state value function, $v_{\pi}(s)$, which captures the expected return from being in state $s$.  It is critical to realise that the subscript $\pi$ in $v_{\pi}(s)$ means it must be evaluated for a given policy $\pi(a|s)$ since $v_{\pi}(s)$ is an expectation value (read: average) of potential returns by being in state $s$, which in turn depends on the expected return from the neighbouring states, $v_{\pi}(s')$.  In fact, this is why the Bellman equation in equation (\ref{eqn:bellmans_equation_part3}) has $v_{\pi}(s)$ on the LHS and $v_{\pi}(s')$'s on the RHS.
 
@@ -211,28 +211,86 @@ This is in fact the action value function as discussed in the next section.  The
         v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{split}
 \end{equation}
-Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP given the current policy, $\pi$, which may not yet be optimal.  It is the goal of RL to find the optimal policy, $\pi_*$, via methods like General Policy Iteration (GPI), Policy Iteration and Value Iteration to discover optimal policies.
+Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP given the current policy, $\pi$, which may not yet be optimal.  We haven't yet discussed optimal policies at all and equation (\ref{eqn:bellmans_equation_part3}) simply calculates state values for a given policy $\pi(a|s)$.  It is the goal of RL to find the optimal policy, $\pi_*$, via methods like General Policy Iteration (GPI), Policy Iteration or Value Iteration to discover optimal policies.
 
-Note that the probabilities $P(s',r|s,a)$ are not to be confused with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the MDP that capture the dynamics of the environment.  Note that for an MRP the state transition probabilties are merely $P(s'|s)$ while for an MDP (which includes actions) it is $P(s',r|s,a)$ which encapsulates probabilties to transition into $s'$ for a given action $a$.  For instance, we could introduce a strong fan effect that blows left into state $s_4$ of the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's now a 0.2 chance of the agent losing its footing/grip and will be blown back to state $s_3$.  These envionmental dynamics/effects are captured in the transition probabilities of the MDP.  So in this case, if we're in state $s_4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these environmental/dynamic effects.
+Note that the probabilities $P(s',r|s,a)$ are not to be confused with the policy $\pi(s,a)$ but are transition probabilities intrinsic to the MDP that capture the dynamics of the environment.  Note that for an MRP the state transition probabilties are merely $P(s'|s)$ while for an MDP (which includes actions) it is $P(s',r|s,a)$ which encapsulates probabilties to transition into $s'$ for a given action $a$.  For instance, we could introduce a strong fan effect that blows left in state $s_4$ of the MDP in Figure \ref{fig:1d-grid-world-problem-statement} where there's now a 0.2 chance of the agent losing its footing/grip and will be blown back to state $s_3$.  These envionmental dynamics/effects are captured in the transition probabilities of the MDP.  So in this case, if we're in state $s_4$ then $P(s_5,r|s_4, a=\text{RIGHT}) = 0.8$ and $P(s_3,r|s_4, a=\text{RIGHT}) = 0.2$ i.e. there's a 0.2 chance of transitioning into the state in the opposite direction.  The goal of RL is to deduce the optimal policy taking into account these environmental/dynamic effects.
 
-Now is a good time to mention model-based and model-free processes.
+Now is a good time to mention model-based and model-free processes.  A model-based process has full knowledge of the transition probabilities $P(s',r|s,a)$, which although introduce a probabalistic element to the process, these transitions are known and the MDP is well-defined.  
 
 (Talk about Gambler's problem and the transition probabilities in that.)
 
 
+\subsection{Evaluating the state value function for an example MDP}
 
-\section{The Action Value Function and Optimal Policies}
+Consider the `Slippery World' MRP shown in Figure \ref{fig:slippery-world-mrp} and consider that we promote it to an MDP complete with actions.  At each state, there are 2 actions $a \in \{a_1, a_2\}$ where $a_1$ and $a_2$ represent the actions move LEFT and move RIGHT respectively.  Since the MDP has $S = 5$ states and each state has $A = 2$ actions, the total number of possible policies is $A^S = 2^5 = 32$.  Each state only has one `good' action so one can imagine each policy being like a binary sequence: $01110$ for example means $[a_1,a_2,a_2,a_2,a_1]$ and it's easy to imagine there are 32 possible combinations of these actions.
+
+Let's try and evaluate the state value function equation (\ref{eqn:bellmans_equation_part3}) for state $s_4$ given the policy defined as follows:
+\begin{equation} \label{eqn:example_policy_for_slippery_world}
+\begin{split}
+\begin{bmatrix}
+    (\pi(a_1|s_1),\pi(a_2|s_1)) \\
+    (\pi(a_1|s_2),\pi(a_2|s_2)) \\
+    (\pi(a_1|s_3),\pi(a_2|s_3)) \\
+    (\pi(a_1|s_4),\pi(a_2|s_4)) \\
+    (\pi(a_1|s_5),\pi(a_2|s_5)) 
+\end{bmatrix} &= 
+\begin{bmatrix}
+    (0.4, 0.6) \\
+    (0.4, 0.6) \\
+    (0.4, 0.6) \\
+    (0.4, 0.6) \\
+    (0.4, 0.6) 
+\end{bmatrix}
+\end{split}
+\end{equation}
+So the policy here is a 0.4 and 0.6 chance of taking action to move LEFT and RIGHT respectively, it effectively tries to do a 40/60 random walk in this slippery world but note it might not be able to actually do a perfect random walk due to the slippery dynamics encoded into the transition probabilities $P(s',r|s,a)$.  Computing $v_{\pi}(s_4)$ with a discount factor of $\gamma=0.5$:
+\begin{equation} \label{eqn:v_s4_for_slippery_world}
+\begin{split}
+    v_{\pi}(s_4) &= \pi(a_1|s_4) [
+        P(s_4,r|s_4,a_1)(r + \gamma v_{\pi}(s_4)) +
+        P(s_3,r|s_3,a_1)(r + \gamma v_{\pi}(s_3))
+    ] \\
+    &+ \pi(a_2|s_4) [
+        P(s_4,r|s_4,a_2)(r + \gamma v_{\pi}(s_4)) +
+        P(s_5,r|s_4,a_2)(r + \gamma v_{\pi}(s_5))
+    ] \\
+    &= 0.4 [ 0.2 (-1 + 0.5 \times -1) + 0.8 (-1 + 0.5 \times -1) ] \\
+    &+ 0.6 [ 0.2 (-1 + 0.5 \times -1) + 0.8 (+10 + 0.5 \times +10) ] \\
+    &= -0.36 + 7.38 \\
+    &= 7.02
+\end{split}
+\end{equation}
+A similar computation can be performed for all states in the MDP.  Note that a different policy $\pi$ would give a different value for $v_{\pi}(s_4)$.  For example, if $\pi(a_1|s_4) = 1.0$ and $\pi(a_2|s_4) = 0.0$ then none of $s_5$'s significant +10 reward will be included in the value of $v_{\pi}(s_4)$ yielding a much lower state value.  It is clear that for each state, there exists a policy that would maximise their state values.  For $s_4$ it is clear to let $\pi(a_1|s_4) = 0.0$ and $\pi(a_2|s_4) = 1.0$ so the agent always tries to move RIGHT to claim that significant +10 reward.  
+
+Note what might happen through repeated applications/sweeps of equation (\ref{eqn:bellmans_equation_part3}) to all the states of the MDP.  It intuitive to see that the fixed +10 reward in state $s_5$ will gradually `trickle' down into the state values of the states on the left.  
+
+
+
+\section{The Action Value Function, Q-Value Tables and Optimal Policies}
 
 The action value function, denoted $q_{\pi}$, is defined as the inner sums in Equation (\ref{eqn:bellmans_equation_part3}):
 \begin{equation} \label{eqn:action_value_function_definition}
     q_{\pi}(s,a) = \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{equation}
-where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and action value functions.  Action value functions include the action in the argument, naturally!
+where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and action value functions.  Action value functions include the action in the argument, naturally!  It might be helpful to imagine equation (\ref{eqn:action_value_function_definition}) computed in matrix for a particular MDP in the following manner:
+\begin{equation} \label{eqn:q-value-table}
+\begin{bmatrix}
+    q(s_1,a_1) & q(s_1,a_2) & \hdots & q(s_1,a_K) \\
+    q(s_2,a_1) & q(s_2,a_2) & \hdots & q(s_2,a_K) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    q(s_N,a_1) & q(s_N,a_2) & \hdots & q(s_N,a_K)
+\end{bmatrix}
+\end{equation}
+where $N$ is the number of states and $K$ is the number of actions per state.  Matrix (\ref{eqn:q-value-table}) is often referred to as a `Q-Value Table'.  
+
+In Q-Learning, once the Q-Value Table has been constructed, it can be used by the agent to determine the next action for a given state by selecting the action that yields the maximum $q$ value.  So say for $s_4$ in the Slippery World MDP, the agent will look at the row for $s_4$ pick the action $a$ yielding the greatest $q(s_4, a)$.  I am wondering how matrix (\ref{eqn:q-value-table}) can be computed without first knowing the optimal policy, and I think the answer is that Q-Learning is a form of off-policy RL which I have not yet covered.
 
 Equation (\ref{eqn:action_value_function_definition}) allows the optimal policy, $\pi_{*}$, to be written succinctly as:
 \begin{equation} \label{eqn:optimal_policy_wrt_action_values}
     \pi_{*}(s) = \argmax_a q_{\pi}(s,a)
 \end{equation}
+You will notice that `optimal' expressions usually have some form of $\max_s$ or $\argmax_a$ in it.
+
 
 \section{Value Iteration}
 
