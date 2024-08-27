@@ -25,14 +25,16 @@ class MDP:
         """Discount factor"""
         return 1.0
 
-    def next_state_prob_reward(self, state, action):
-        """Function to return list of triples of:
+    def P(self, state, action):
+        """Function representing P(s',r|s,a) in Bellmans equation
+        of an MDP.
+        Given a (state, action) pair returns a list of triples of:
         [(<next_state>, <transition_probability>, <reward>), ...]"""
         result = []
         if action == "right":
-            result.append((state+1, 1.0, -1.0))
+            result.append((state+1, -1.0, 1.0))
         elif action == "left":
-            result.append((state-1, 1.0, -1.0))
+            result.append((state-1, -1.0, 1.0))
         return result
 
 def value_iteration(mdp, num_iters):
@@ -50,7 +52,7 @@ def value_iteration(mdp, num_iters):
     def Q(state, action):
         # Sum over available next states
         sum_over_next_states = 0
-        for next_state, trans_prob, reward in mdp.next_state_prob_reward(state, action):
+        for next_state, reward, trans_prob in mdp.P(state, action):
             sum_over_next_states += trans_prob * (reward + mdp.discount()*V[next_state])
         return sum_over_next_states
 
@@ -70,7 +72,7 @@ def value_iteration(mdp, num_iters):
 if __name__ == "__main__":
     mdp1 = MDP(10)
     print([mdp1.actions(i) for i in mdp1.states()])
-    print(mdp1.next_state_prob_reward(2, "left"))
-    print(mdp1.next_state_prob_reward(1, "right"))
+    print(mdp1.P(2, "left"))
+    print(mdp1.P(1, "right"))
 
     value_iteration(mdp1, 20)
