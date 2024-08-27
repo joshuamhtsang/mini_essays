@@ -266,13 +266,19 @@ Note what might happen through repeated applications/sweeps of equation (\ref{eq
 
 
 
-\section{The Action Value Function, Q-Value Tables and Optimal Policies}
+\section{State-Action Value Function, Q-Value Tables and Optimal Policies}
 
 The action value function, denoted $q_{\pi}$, is defined as the inner sums in Equation (\ref{eqn:bellmans_equation_part3}):
 \begin{equation} \label{eqn:action_value_function_definition}
     q_{\pi}(s,a) = \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{equation}
-where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and action value functions.  Action value functions include the action in the argument, naturally!  It might be helpful to imagine equation (\ref{eqn:action_value_function_definition}) computed in matrix for a particular MDP in the following manner:
+where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and state-action value functions.  State-action value functions include the action in the argument, naturally!  Equation (\ref{eqn:action_value_function_definition}) allows the optimal policy, $\pi_{*}$, to be written succinctly as:
+\begin{equation} \label{eqn:optimal_policy_wrt_action_values}
+    \pi_{*}(s) = \argmax_a q_{\pi}(s,a)
+\end{equation}
+You will notice that `optimal' expressions usually have some form of $\max_s$ or $\argmax_a$ in it.
+
+It is instructive to represent Equation (\ref{eqn:action_value_function_definition}) computed as a matrix for a particular MDP in the following manner:
 \begin{equation} \label{eqn:q-value-table}
 \begin{bmatrix}
     q(s_1,a_1) & q(s_1,a_2) & \hdots & q(s_1,a_K) \\
@@ -281,15 +287,10 @@ where $s'$ are the neighbouring states to the current state, $s$.  Do not confus
     q(s_N,a_1) & q(s_N,a_2) & \hdots & q(s_N,a_K)
 \end{bmatrix}
 \end{equation}
-where $N$ is the number of states and $K$ is the number of actions per state.  Matrix (\ref{eqn:q-value-table}) is often referred to as a `Q-Value Table'.  
+where $N$ is the number of states and $K$ is the number of actions per state.  Matrix (\ref{eqn:q-value-table}) is often referred to as a `Q-value table'.  
 
-In Q-Learning, once the Q-Value Table has been constructed, it can be used by the agent to determine the next action for a given state by selecting the action that yields the maximum $q$ value.  So say for $s_4$ in the Slippery World MDP, the agent will look at the row for $s_4$ pick the action $a$ yielding the greatest $q(s_4, a)$.  I am wondering how matrix (\ref{eqn:q-value-table}) can be computed without first knowing the optimal policy, and I think the answer is that Q-Learning is a form of off-policy RL which I have not yet covered.
+As a foreshadow, Q-Learning attempts to construct this Q-value table which is used by the agent to determine the optimal action for a given state by selecting the action that yields the maximum $q$ value.  So say for $s_4$ in the Slippery World MDP, the agent will look at the row for $s_4$ and pick the action $a$ (column) that yields the greatest $q(s_4, a)$ value.  You may wonder how to compute the Q-value table if we don't know the optimal policy.  The exact details of how the Q-value table is constructed will not be explicitly stated here, but note that Q-Learning is an {\it off-policy} learning scheme and thus exploration of the state space is done by a behaviour policy, $b(a|s)$, instead of $\pi(a|s)$ in the case of on-policy schemes.
 
-Equation (\ref{eqn:action_value_function_definition}) allows the optimal policy, $\pi_{*}$, to be written succinctly as:
-\begin{equation} \label{eqn:optimal_policy_wrt_action_values}
-    \pi_{*}(s) = \argmax_a q_{\pi}(s,a)
-\end{equation}
-You will notice that `optimal' expressions usually have some form of $\max_s$ or $\argmax_a$ in it.
 
 
 \section{Value Iteration}
@@ -307,4 +308,33 @@ Value iteration allows one to assign state values to each state through repeated
 
 \section{Policy Iteration}
 
+
+\section{Model-Free Learning Schemes}
+
+Brilliant explanation in video 3 Mutual Information youtube video.  Key point is that $P(s',r|s,a)$ in Equation (\ref{eqn:action_value_function_definition}) is often unavailable in real-life practical problems and so we directly estimate the $q_*(s,a)$ by associating the final returns of episodic trajectories to state values (estimate $v(s)$) or state-action pairs (estimate $q(s,a)$).
+
+\section{On-Policy and Off-Policy Learning}
+
+For on-policy schemes the policy $\pi(s|a)$ is used to explore the state space:
+\begin{equation} \label{eqn:on-policy-definition}
+    \pi(a|s) = b(a|s)
+\end{equation}
+while for off-policy schemes e.g. Q-Learning, Off-Policy Monte Carlo etc. the roles are separated with exploration done by a separate behaviour policy, $b(a|s)$,:
+\begin{equation} \label{eqn:off-policy-definition}
+    \pi(a|s) \neq b(a|s)
+\end{equation}
+
+Since the sampling of trajectories is done using $b(a|s)$ instead of $\pi(a|s)$, importance sampling is used to rescale the sampled distributions to recover return contributions as if the sampled was done by $\pi(a|s)$.  This is similar to Umbrella Sampling in computational materials science.  One can initialise trajectories from any state and explore using the behaviour policy $b(a|s)$ and generate numerous trajectories and their associated returns.  Then use a credit assignment scheme like Monte Carlo Learning to assign values to either the state value function $v(s)$ of each state, or state-action values $q(s,a)$ to each state-action pair.
+
+
+
+
+
+
+
+
+
+
 \end{document}
+
+
