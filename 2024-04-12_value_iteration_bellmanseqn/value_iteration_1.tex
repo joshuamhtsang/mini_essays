@@ -40,14 +40,14 @@ It is instructive intially discuss the foundational concepts in Markov Decision 
     \begin{equation} \label{eqn:policy_formal_definition}
         \pi(a|s) = \pi(s,a) = P(A_t=a|S_t=s)
     \end{equation}
-    which is the probability of taking action $a$ given the system is in state $s$ at time step $t$. As such, $\pi(s, a)$ returns a probability value in the range $[0,1]$. The goal of RL is to learn the optimal policy $\pi(s,a)$ to maximise future rewards/returns (explained next). As a foreshadow, {\it optimal} policy functions are often expressed as an $\argmax_a$ as follows:
+    which is the probability of taking action $a$ given the system is in state $s$ at time step $t$. As such, $\pi(s, a)$ returns a probability value in the range $[0,1]$. The goal of RL is to learn the optimal policy $\pi(s,a)$ to maximise the discounted sum of future rewards/returns (explained next). As a foreshadow, {\it optimal} policy functions are often expressed as an $\argmax_a$ as follows:
     \begin{equation} \label{eqn:value_iteration_foreshadow}
     \begin{split}
-        \pi_{*}(s,a) &= \argmax_a \sum_{s'} \sum_{r} P(s',r|s,a)[r + \gamma v_{\pi}(s')] \\
+        \pi_{*}(s,a) &= \argmax_a \sum_{s'} P(s',r|s,a)[r + \gamma v_{\pi}(s')] \\
         &= \argmax_a q_{*} (s,a)
     \end{split}
     \end{equation}
-    i.e. the optimal policy function returns the action $a$ that transitions the agent to the neighbouring state $s'$ that yields the maximum transition-probability-weighted sum of the returns, or in other words, the maximum {\it action value} as discussed around equation (\ref{eqn:action_value_function_definition}).
+    i.e. the optimal policy function returns the action $a$ that transitions the agent to the neighbouring state $s'$ that yields the maximum transition-probability-weighted sum of of future rewards, or in other words, the maximum {\it state-action value} as discussed around equation (\ref{eqn:action_value_function_definition}).
     \item Reward: Numerical reward can be associated with certain states and actions, represented as $R_t$ for the current time step.  In the case of Figure \ref{fig:1d-grid-world-problem-statement}, there is a fixed reward of $+10$ at state $s_{10}$ and the other states have a reward of $-1$.  The goal of RL can be considered to be finding the sequence of actions that maximise the sum of rewards to achieve a sucessful episode i.e. the agent reaches the terminal state $s_{10}$.
     \item Episodes:  MDPs have the characteristic of being finite i.e. they end within a finite number of time steps, denoted $T$.  More specifically, an episode is a sequence of states, actions and rewards that start at some state and end in the terminal state.
     \item Return or "Future Gains":  Usually denoted $G_t$ it is the sum of rewards gained by the agent {\it after} time step $t$, define as:
@@ -82,7 +82,7 @@ Consider the MRP shown in Figure \ref{fig:slippery-world-mrp} which describes a 
 
 \begin{figure}
     \includegraphics[width=\textwidth]{images/slippery_world_mrp.png}
-    \caption{The Slippery World MRP where there's a 0.2 chance of remaining in the present state as the agent can slip and fall, making no movement progress.  There are still rewards associated with the states, hence the name Markov {\it Reward} Process.  Drawn with draw.io and saved in Google Drive.}
+    \caption{The Slippery World MRP where there's a 0.2 chance of remaining in the present state as the agent can slip and fall, making no movement progress.  There are still rewards associated with the states, hence the name Markov {\it Reward} Process, but no actions so it's not a Markov {\it Decision} Process.  Drawn with draw.io and saved in Google Drive.}
     \label{fig:slippery-world-mrp}
 \end{figure}
 
@@ -151,34 +151,34 @@ Solving the matrix is roughly $O(N^3)$ where $N$ is the number of states.
 
 \section{Playing with Episodes of an MDP}
 
-Recall that epsiodes are a sequence of states, actions and rewards that end in the terminal state.  Each episode yields a return/gain at $T$, which is $G_T$.  To clarify concepts and develop some intuitive, consider a few episodes for the Grid World system in Figure \ref{fig:1d-grid-world-problem-statement}.  The actions are $a \in [\text{LEFT}, \text{RIGHT}]$
+Recall that epsiodes are a sequence of states, actions and rewards that end in the terminal state.  To clarify concepts and develop some intuitive, consider a few episodes for the Grid World system in Figure \ref{fig:1d-grid-world-problem-statement}.  The actions are $a \in [\text{LEFT}, \text{RIGHT}]$
 
 \begin{itemize}
-  \item Episode Example 1:
+  \item Episode Example 1:  A simple episode where the agent walks directly to the terminal state.
   
-  $[S_{t=1} = s_4, A_{t=1} = \text{RIGHT}, G_{t=1}=-1]$ \\
-  $[S_{t=2} = s_5, A_{t=2} = \text{RIGHT}, G_{t=2}=-2]$ \\
-  $[S_{t=3} = s_6, A_{t=3} = \text{RIGHT}, G_{t=3}=-3]$ \\
-  $[S_{t=4} = s_7, A_{t=4} = \text{RIGHT}, G_{t=4}=-4]$ \\
-  $[S_{t=5} = s_8, A_{t=5} = \text{RIGHT}, G_{t=5}=-5]$ \\
-  $[S_{t=6} = s_9, A_{t=6} = \text{RIGHT}, G_{t=6}=-6]$ \\
-  $[S_{t=7} = s_10, A_{t=7} = \text{RIGHT}, G_{t=7}=+4]$ \\
+  $[t=1, S_{1} = s_4, A_{1} = \text{RIGHT}, R_{1}=-1, G_{1}=R_{2}+\hdots+R_{7}=+5]$ \\
+  $[t=2, S_{2} = s_5, A_{2} = \text{RIGHT}, R_{2}=-1, G_{2}=R_{3}+\hdots+R_{7}=+6]$ \\
+  $[t=3, S_{3} = s_6, A_{3} = \text{RIGHT}, R_{3}=-1, G_{3}=R_{4}+\hdots+R_{7}=+7]$ \\
+  $[t=4, S_{4} = s_7, A_{4} = \text{RIGHT}, R_{4}=-1, G_{4}=R_{5}+\hdots+R_{7}=+8]$ \\
+  $[t=5, S_{5} = s_8, A_{5} = \text{RIGHT}, R_{5}=-1, G_{5}=R_{6}+R_{7}=+9]$ \\
+  $[t=6, S_{6} = s_9, A_{6} = \text{RIGHT}, R_{6}=-1, G_{6}=R_{7}=+10]$ \\
+  $[t=7, S_{7} = s_{10}, A_{7} = \text{RIGHT}, R_{7}=+10, G_{7}=NA]$ \\
 
-  Note that this episode yields $G_T = +4$.
+  Note how the future returns, $G_t$, for each state can be calculated using Equation \ref{eqn:return_G_t}.
 
   \item Episode Example 2:
   
-  $[S_{t=1} = s_4, A_{t=1} = \text{RIGHT}, G_{t=1}=-1]$ \\
-  $[S_{t=2} = s_5, A_{t=2} = \text{RIGHT}, G_{t=2}=-2]$ \\
-  $[S_{t=3} = s_6, A_{t=3} = \text{RIGHT}, G_{t=3}=-3]$ \\
-  $[S_{t=4} = s_7, A_{t=4} = \text{RIGHT}, G_{t=4}=-4]$ \\
-  $[S_{t=5} = s_8, A_{t=5} = \text{LEFT}, G_{t=5}=-5]$ \\
-  $[S_{t=6} = s_7, A_{t=6} = \text{RIGHT}, G_{t=6}=-6]$ \\
-  $[S_{t=7} = s_8, A_{t=7} = \text{RIGHT}, G_{t=7}=-7]$ \\
-  $[S_{t=8} = s_9, A_{t=8} = \text{RIGHT}, G_{t=8}=-8]$ \\
-  $[S_{t=9} = s_10, A_{t=9} = \text{RIGHT}, G_{t=9}=+2]$ \\
+  $[t=1, S_{1} = s_4, A_{1} = \text{RIGHT}, R_{1}=-1, G_{1}=R_{2}+\hdots+R_{9}=+3]$ \\
+  $[t=2, S_{2} = s_5, A_{2} = \text{RIGHT}, R_{2}=-1, G_{2}=R_{3}+\hdots+R_{9}=+4]$ \\
+  $[t=3, S_{3} = s_6, A_{3} = \text{RIGHT}, R_{3}=-1, G_{3}=R_{4}+\hdots+R_{9}=+5]$ \\
+  $[t=4, S_{4} = s_5, A_{4} = \text{LEFT},  R_{4}=-1, G_{4}=R_{5}+\hdots+R_{9}=+6]$ \\
+  $[t=5, S_{5} = s_6, A_{5} = \text{RIGHT}, R_{5}=-1, G_{5}=R_{6}+\hdots+R_{9}=+7]$ \\
+  $[t=6, S_{6} = s_7, A_{6} = \text{RIGHT}, R_{6}=-1, G_{6}=R_{7}+\hdots+R_{9}=+8]$ \\
+  $[t=7, S_{7} = s_8, A_{7} = \text{RIGHT}, R_{7}=-1, G_{7}=R_{8}+R_{9}=+9]$ \\
+  $[t=8, S_{8} = s_9, A_{8} = \text{RIGHT}, R_{8}=-1, G_{8}=R_{9}=+10]$ \\
+  $[t=9, S_{9} = s_{10}, A_{9} = \text{RIGHT}, R_{9}=+10, G_{9}=NA]$ \\
   
-  Note that this episode yields $G_T = +2$, it is lower than Episode Example 1 because at $t=5$ it backtracks by going LEFT which caused it to require a longer path, and thus suffer more from the $R_t = -1$ penalties for the non-terminal states.
+  Note that this episode backtracks by going LEFT at $t=4$ which caused it to require a longer overall episode.
 \end{itemize}
 
 \section{State Value Function and Bellman's Equation}
@@ -201,14 +201,14 @@ Using Equation (\ref{eqn:return_G_t_like_bellmans_eqn}) we can rewrite $\mathbb{
 \begin{split}
         \mathbb{E} [G_t|s, a] &= \mathbb{E} [R_{t+1} + \gamma G_{t+1}|s, a] \\
         &= \mathbb{E} [R_{t+1} + \gamma v_\pi(S_{t+1})|s, a] \\
-        &= \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
+        &= \sum_{s'} P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{split}
 \end{equation}
 
 This is in fact the action value function as discussed in the next section.  The final expression after substitution back into equation (\ref{eqn:bellmans_equation_part1}) is:
 \begin{equation} \label{eqn:bellmans_equation_part3}
 \begin{split}
-        v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
+        v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{split}
 \end{equation}
 Equation (\ref{eqn:bellmans_equation_part3}) allows us to calculate the expected return value for each state in the MDP given the current policy, $\pi$, which may not yet be optimal.  We haven't yet discussed optimal policies at all and equation (\ref{eqn:bellmans_equation_part3}) simply calculates state values for a given policy $\pi(a|s)$.  It is the goal of RL to find the optimal policy, $\pi_*$, via methods like General Policy Iteration (GPI), Policy Iteration or Value Iteration to discover optimal policies.
@@ -270,13 +270,13 @@ Note what might happen through repeated applications/sweeps of equation (\ref{eq
 
 The action value function, denoted $q_{\pi}$, is defined as the inner sums in Equation (\ref{eqn:bellmans_equation_part3}):
 \begin{equation} \label{eqn:action_value_function_definition}
-    q_{\pi}(s,a) = \sum_{s'} \sum_r P(s',r|s,a) [r + \gamma v_{\pi}(s')]
+    q_{\pi}(s,a) = \sum_{s'} P(s',r|s,a) [r + \gamma v_{\pi}(s')]
 \end{equation}
 where $s'$ are the neighbouring states to the current state, $s$.  Do not confuse state values functions and state-action value functions.  State-action value functions include the action in the argument, naturally!  Equation (\ref{eqn:action_value_function_definition}) allows the optimal policy, $\pi_{*}$, to be written succinctly as:
 \begin{equation} \label{eqn:optimal_policy_wrt_action_values}
     \pi_{*}(s) = \argmax_a q_{\pi}(s,a)
 \end{equation}
-You will notice that `optimal' expressions usually have some form of $\max_s$ or $\argmax_a$ in it.
+You will notice that `optimal' expressions usually have some form of $\max_a$ or $\argmax_a$ in it.
 
 It is instructive to represent Equation (\ref{eqn:action_value_function_definition}) computed as a matrix for a particular MDP in the following manner:
 \begin{equation} \label{eqn:q-value-table}
@@ -292,13 +292,97 @@ where $N$ is the number of states and $K$ is the number of actions per state.  M
 As a foreshadow, Q-Learning attempts to construct this Q-value table which is used by the agent to determine the optimal action for a given state by selecting the action that yields the maximum $q$ value.  So say for $s_4$ in the Slippery World MDP, the agent will look at the row for $s_4$ and pick the action $a$ (column) that yields the greatest $q(s_4, a)$ value.  You may wonder how to compute the Q-value table if we don't know the optimal policy.  The exact details of how the Q-value table is constructed will not be explicitly stated here, but note that Q-Learning is an {\it off-policy} learning scheme and thus exploration of the state space is done by a behaviour policy, $b(a|s)$, instead of $\pi(a|s)$ in the case of on-policy schemes.
 
 
+\section{Policy Evaluation}
+\label{sec:policy_evaluation}
+
+Policy evaluation, policy iteration and value iteration are all interconnected ideas.  Policy evaluation is perhaps the most "atomic" of them all and it's the process of computing the value function, $v_{\pi}(s)$, for all states in an MDP for a given policy, $\pi$.  It is essentially the iteration application of the Bellman expectation equation (\ref{eqn:bellmans_equation_part3}), which is rewritten here for convenience:
+
+\begin{equation} \label{eqn:policy_evaluation_bellman_expectation_eqn}
+    \begin{split}
+        v_\pi (s) &= \sum_{a} \pi(a|s) \sum_{s'} P(s',r|s,a) [r + \gamma v_{\pi}(s')]
+    \end{split}
+\end{equation}
+
+The application of equation (\ref{eqn:policy_evaluation_bellman_expectation_eqn}) is executed in the following manner:
+
+\begin{itemize}
+\item Define a policy $\pi(a|s)$.  For instance, in the 1D Grid World example, we can pick a `uniform random' policy where:
+
+\begin{equation} \label{eqn:uniform_random_policy_for_1d_grid_world}
+    \begin{split}
+        \pi(a=a_1|s=\ast) &= 0.5 \\
+        \pi(a=a_2|s=\ast) &= 0.5
+    \end{split}
+\end{equation}
+
+The policy is just a singular simple example.  In general, any policy can be defined such as:
+
+\begin{equation} \label{eqn:specific_weird_policy_for_1d_grid_world}
+    \begin{split}
+        \pi(a=a_1|s=s_1) &= 0.0 \\
+        \pi(a=a_2|s=s_1) &= 1.0 \\
+        \pi(a=a_1|s=s_2) &= 0.7 \\
+        \pi(a=a_2|s=s_2) &= 0.3 \\
+        \vdots \\
+        \pi(a=a_1|s=s_{9}) &= 0.4 \\
+        \pi(a=a_2|s=s_{9}) &= 0.6
+    \end{split}
+\end{equation}
+
+and equation (\ref{eqn:policy_evaluation_bellman_expectation_eqn}) can be used to compute the state values, $v_\pi(s)$ for each state.
+
+\item At each iteration $k+1$
+\item For all states $s \in S$
+\item Update $v_{k+1}(s)$ from $v_{k}(s')$ using Bellman expectation equation: This means we compute an improved estimate of the state value $v_{k+1}(s)$ based on the state values from the previous iteration $k$, $v_{k}(s')$.  Explicitly, it is the Bellman expectation equation (\ref{eqn:policy_evaluation_bellman_expectation_eqn}):
+
+\begin{equation} \label{eqn:policy_evaluation_iteration_eqn}
+\begin{split}
+    v_{k+1} (s) &= \sum_{a} \pi(a|s) \sum_{s'} P(s',r|s,a) [r + \gamma v_{k}(s')]
+\end{split}
+\end{equation}
+
+\item Repeat until convergence is reached, in which case $v_{k+1}(s) = v_\pi(s)$.
+\end{itemize}
+
+Note that this algorithm only converges to the true state values for our given policy $\pi$, it isn't computing anything relating to the optimal policy $v_{\ast}(s)$ (shorthand of $v_{\pi_\ast}(s)$) yet.  Optimal policies are found by policy iteration or value iteration, which both use policy evaluation but then modify the policy in some way after successive policy evaluations phases.  Somewhat confusingly, in David Silver's lectures, policy evaluation of the uniform random policy in 2D Grid World yields conveged state values from which a sensible policy can be extracted by $\argmax_a v_\pi(s)$, but I suspect this only happened because of the uniform random policy and the somewhat homogenous reward environment.
+
+
+\section{Policy Iteration}
+
+Policy evaluation is strictly an {\it evaluation} process for a given policy and does not suggest how to improve that policy per se.  Policy iteration is a strategy to find the optimal policy for a given MDP.  It involes an alternating process of policy evaluation (as described above) and greedy policy improvement.
+
+\begin{itemize}
+    \item Evaluate a given policy, $\pi$, as per Section \ref{sec:policy_evaluation} i.e. compute the state values $v_{\pi}(s)$ for all states for a given policy $\pi$.
+    \item Modify the policy by making it act greedily with respect to $v_{\pi}$.  The new policy is $\pi'(s)$:
+    \begin{equation} \label{eqn:modified_policy_from_policy_iteration}
+    \begin{split}
+        \pi'(s) &= \argmax_a q_{\pi}(s,a)
+    \end{split}
+    \end{equation}
+    Note how similar the above definition is to the expression for picking the optimal action from the Q-table in equation (\ref{eqn:optimal_policy_wrt_action_values}).  
+    \item Repeat policy evaluation and policy improvement until convergence to an optimal policy.
+\end{itemize}
+
+One can start with any `random' policy and for an MDP this process is guaranteed to converge towards the optimal policy $v_\ast$.  The starting policy could be a {\it stochastic} policy akin to equations (\ref{eqn:specific_weird_policy_for_1d_grid_world}), or a {\it deterministic} policy where $\pi(a|s) \in \{0,1\}$ i.e. $\pi(a|s)$ maps each state $s \in S$ to a single action $a \in A$.  It is clear that Policy Iteration will yield a deterministic optimal policy, and for MDPs it is known that the optimal policy will be deterministic.  However, there are cases where a stochastic policy is needed, such as in a game of rock, paper, scissors.  I believe stochastic policy can be derived from policy gradient methods, but I'm not sure at the moment.
+
 
 \section{Value Iteration}
 
-Value iteration allows one to assign state values to each state through repeated, iterative application of the value function, and the optimal policy is extracted at the end.  
+Value iteration is another mechanism for finding the optimal policy, $\pi_{\ast}$.  Recall that for policy evaluation, the Bellman {\it expectation} equation wwas used to find the value function for a given policy, $v_{\pi}$.  For value {\it iteration}, one uses an iterative application of the Bellman {\it optimality} equation to find optimal value function.  Note that value iteration does not explicitly build an improved policy at each step like policy evaluation.
 
-Look at 1:08:23 in Lecture 2 of Stanford RL Youtube video.
+\begin{itemize}
+    \item At each iteration $k+1$
+    \item For all states $s \in S$
+    \item Update $v_{k+1}(s)$ from $v_{k}(s')$ using the Bellman optimality equation:
+    \begin{equation} \label{eqn:Bellman_optimality_eqn}
+    \begin{split}
+        v_{k+1} (s) &= \max_{a \in A} \left[ r(s,a) + \gamma \sum_{s' \in S} P(s', r|s,a) v_k(s') \right]
+    \end{split}
+    \end{equation}
+    Note how the state transition probability function/matrix $P(s',r|s,a)$ no longer weighs the reward $r$.  I'm not complete sure why this is, but this is the expression in David Silver's lectures.  In the script {\it line\_value\_iteration\_1.py}, $P(s',r|s,a)$ is used to weigh the reward also.
+\end{itemize}
 
+Figure \ref{fig:iters-of-value-iteration-1d-grid-world-code-output} displays the output of running the value iteration script {\it line\_value\_iteration\_1.py}.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{images/iters-of-value-iteration-1d-grid-world-code-output.png}
@@ -307,7 +391,7 @@ Look at 1:08:23 in Lecture 2 of Stanford RL Youtube video.
 \end{figure}
 
 
-\section{Policy Iteration}
+
 
 
 \section{Model-Free Learning Schemes}
