@@ -317,5 +317,53 @@ address ranges.
 Similar to above but create a bridge in the default namespace and 
 two veth pairs will be needed this time.  See the YouTube video.
 
-| netns1 | <--veth1--> | bridge1 (in default ns ) | <--veth2--> | netns2 | 
+[https://wiki.archlinux.org/title/network_bridge]
+
+
+| ns1 | <--veth1--> | br0 (in default ns ) | <--veth2--> | ns2 | 
+
+The general workflow is as follows:
+1. Create the bridge (`br0`) in the default namespace
+2. Create 2 network namespaces (`ns1` and `ns2`)
+3. 
+
+```
+sudo ip link add name br0 type bridge
+sudo ip link add name br0eth1 type veth peer name ns1eth1
+sudo ip link add name br0eth2 type veth peer name ns2eth1
+
+sudo ip netns add ns1
+sudo ip netns add ns2
+
+sudo ip link set dev br0eth1 master br0
+sudo ip link set dev br0eth2 master br0
+sudo ip link set dev ns1eth1 netns ns1
+sudo ip link set dev ns2eth1 netns ns2
+
+sudo ip link set dev br0eth1 up
+sudo ip -c -n ns1 link set dev ns1eth1 up
+sudo ip -c -n ns2 link set dev ns2eth1 up
+sudo ip link set dev br0 up
+```
+
+To ping:
+```
+sudo ip -c -n ns2 addr show
+sudo ip netns exec ns1 ping fe80::8029:6dff:fe1c:b8c
+```
+Output:
+```
+$ sudo ip netns exec ns1 ping fe80::8029:6dff:fe1c:b8c
+PING fe80::8029:6dff:fe1c:b8c(fe80::8029:6dff:fe1c:b8c) 56 data bytes
+64 bytes from fe80::8029:6dff:fe1c:b8c%ns1eth1: icmp_seq=1 ttl=64 time=0.039 ms
+64 bytes from fe80::8029:6dff:fe1c:b8c%ns1eth1: icmp_seq=2 ttl=64 time=0.105 ms
+64 bytes from fe80::8029:6dff:fe1c:b8c%ns1eth1: icmp_seq=3 ttl=64 time=0.088 ms
+```
+
+Pinging between ns1 and ns2 works.  But how can I ping to the ns1 from default namespace?
+
+# Creating VLAN Interfaces
+
+See: https://baturin.org/docs/iproute2/#ip-link-add-vlan
+
 
