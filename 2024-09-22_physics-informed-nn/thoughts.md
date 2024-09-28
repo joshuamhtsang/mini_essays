@@ -3,3 +3,9 @@
 - Forward modelling:  PINN vs Euler/RK (see notes in my notebook).  Autograd saves us from needed to derive the finite difference integration formulas?
 
 - PINN for eigenvalue equations?  Suppose the Schrodinger equation in a box potential.
+
+- Perturbation theory with PINNs
+
+- Can you learn the Green’s function for a PDE and use it as the kernel to solve general problems related to that PDE?
+
+- Can physics-informed NN be used to exploit Green’s functions also?
