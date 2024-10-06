@@ -9,3 +9,5 @@
 - Can you learn the Green’s function for a PDE and use it as the kernel to solve general problems related to that PDE?
 
 - Can physics-informed NN be used to exploit Green’s functions also?
+
+- 
