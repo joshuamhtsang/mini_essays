@@ -29,9 +29,22 @@ There are several distinguishing features of Bayesian Inference compared to clas
 - **Calculates the likely distribution of the model parameter(s), $P(\theta|D)$:**
   In a classical statistical analysis, one might compute the mean, $\mu$, standard deviation, $\sigma$, and the confidence intervals from the data $D$.  This yields just a *single* value for the $\mu$, $\sigma$ etc. from $D$.  In contrast, a Baysian analysis yields the probablistic distribution of the generative model's parameters $\theta$ i.e. $P(\theta|D)$, which in the case of a Normal distribution are $\theta = \{\mu, \sigma\}$.  This will be drawn out in the example(s) below.
 
-## Introducing the language of Bayes Theorem
+## Bayes Theorem for Inference
+
+Bayes Theorem for inference is conventionally written as follows:
 
 $$P(\theta | D) = \frac{P(D | \theta ) P(\theta)}{P(D)}$$
 
+where $\theta$ are the parameters of a probability distribution and $D$ is the data we have.  In the language of Bayes Theorem, each of the terms in the above formula have the names:
 
 $$ {\tt Posterior} = \frac{ {\tt Likelihood} \times {\tt Prior} }{ {\tt Margin} } $$
+
+
+## Inferring the Parameters of a Probability Distribution
+
+$$ f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(x-\mu)^2}{2\sigma ^2} \right) $$
+
+$$ \theta = \{ \mu, \sigma \} $$
+
+$$ P(D | \theta) = P(w_1 = 14.0 | \{ \mu = 16.0, \sigma=2.0 \}) \\ \times P(w_1 = 15.5 | \{ \mu = 16.0, \sigma=2.0 \}) \\ \times P(w_1 = 17.9 | \{ \mu = 16.0, \sigma=2.0 \}) $$
+
