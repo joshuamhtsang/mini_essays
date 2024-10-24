@@ -42,6 +42,9 @@ $$ {\tt Posterior} = \frac{ {\tt Likelihood} \times {\tt Prior} }{ {\tt Margin} 
 
 ## Inferring the Parameters of a Probability Distribution
 
+
+### An example of weighing Nessie the Dog
+
 $$ f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(x-\mu)^2}{2\sigma ^2} \right) $$
 
 $$ \theta = \{ \mu, \sigma \} $$
