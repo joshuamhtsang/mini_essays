@@ -12,6 +12,11 @@
 
 [https://www.quantstart.com/articles/Bayesian-Statistics-A-Beginners-Guide/]
 
+Barry Van Veen - shows the equivalence of different estimations of the optimal parameter values is actually minimium of different errors like mean squared error (mean of $P(\theta|D)$), absolute error (median of $P(\theta|D)$) and max a posteriori (argmax of $P(\theta|D)$).
+
+[https://www.youtube.com/watch?v=fjqd0gG-5OE] 
+
+[https://www.youtube.com/watch?v=fvNUUJuFXM0]
 
 ## Foundational Concepts
 
