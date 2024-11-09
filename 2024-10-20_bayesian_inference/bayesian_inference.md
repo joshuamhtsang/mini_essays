@@ -45,14 +45,31 @@ where $\theta$ are the parameters of a probability distribution and $D$ is the d
 $$ {\tt Posterior} = \frac{ {\tt Likelihood} \times {\tt Prior} }{ {\tt Margin} } $$
 
 
-## Inferring the Parameters of a Probability Distribution
+## Inferring the Distribution of the Parameters of a Probability Distribution
 
+### An example of weighing Nessie the Dog at the vet
 
-### An example of weighing Nessie the Dog
+Suppose we go to the vet on 3 separate occasions, and our beloved Nessie is weighed each time she is there.  Due to variabilities from her intrinsic weight, the thickness of her fur coat and how much she has eaten etc. her weight is different each time.  The 3 data points are:
+
+$$ D = [w_1, w_2, w_3] =  [14.0, 15.5, 17.9] $$
+
+where the units are in kilograms (kg).
+
+The question is, what is Nessie's most likely true weight?  We will assume the measurements of her weight are normally distributed, where the normal distribution has the form:
 
 $$ f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(x-\mu)^2}{2\sigma ^2} \right) $$
 
+In this case, the parameters of the distribute are:
+
 $$ \theta = \{ \mu, \sigma \} $$
 
-$$ P(D | \theta) = P(w_1 = 14.0 | \{ \mu = 16.0, \sigma=2.0 \}) \\ \times P(w_1 = 15.5 | \{ \mu = 16.0, \sigma=2.0 \}) \\ \times P(w_1 = 17.9 | \{ \mu = 16.0, \sigma=2.0 \}) $$
+where $\mu$ is the mean and $\sigma$ is the standard deviation.  
 
+The objective of this exercise is to compute the distribution $P(\theta|D)$ given the data $D$.  The first term in the Baysian Inference formula is the likelihood, $P(D|\theta)$, and is given by the product of the probabilities that we get each of the observations in $D$ if the probability distribution parameters take the value(s) $\theta$.  For example, if $\theta = \{ \mu = 17.0, \sigma=2.0 \}$ then the conditional probability is:
+
+$$ P(D | \theta = \{ \mu = 17.0, \sigma=2.0 \}) \\ = \\ P(w_1 = 14.0 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_2 = 15.5 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_3 = 17.9 | \{ \mu = 17.0, \sigma=2.0 \}) \\ = 0.00175...$$
+
+
+
+
+<Find the most likely mean first, then most likely standard deviation?>
