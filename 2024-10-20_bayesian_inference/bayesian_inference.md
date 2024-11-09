@@ -73,3 +73,5 @@ $$ P(D | \theta = \{ \mu = 17.0, \sigma=2.0 \}) \\ = \\ P(w_1 = 14.0 | \{ \mu = 
 
 
 <Find the most likely mean first, then most likely standard deviation?>
+
+# Incorporating Prior Beliefs
