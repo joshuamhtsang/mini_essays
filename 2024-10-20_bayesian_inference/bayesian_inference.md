@@ -69,9 +69,19 @@ The objective of this exercise is to compute the distribution $P(\theta|D)$ give
 
 $$ P(D | \theta = \{ \mu = 17.0, \sigma=2.0 \}) \\ = \\ P(w_1 = 14.0 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_2 = 15.5 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_3 = 17.9 | \{ \mu = 17.0, \sigma=2.0 \}) \\ = 0.00175...$$
 
+In `example_nessie_v1.ipynb`, $P(\theta|\mu)$ is computed for a range of $\mu$ values for fixed standard deviation $\sigma=2.0$ yielding the following distribution:
+
+![image info](images/PDgivenmu_nessie_example.png)
+
+Observe that the most likely value for the mean $\mu$ is around 16.0 kg.  We can now do a similar computation $\sigma$ but keeping $\mu = 16.0$ fixed:
+
+![image info](images/PDgivensigma_nessie_example.png)
+
+Observe that the most likely value for the standard deviation $\sigma$ is around 1.6 kg.  The combination of the most likely values of the distribution parameters is thus:
+
+$$ \theta = \{ \mu = 16.0, \sigma = 1.6 \} $$
 
 
 
-<Find the most likely mean first, then most likely standard deviation?>
 
 # Incorporating Prior Beliefs
