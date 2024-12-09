@@ -69,7 +69,13 @@ The objective of this exercise is to compute the distribution $P(\theta|D)$ give
 
 $$ P(D | \theta = \{ \mu = 17.0, \sigma=2.0 \}) \\ = \\ P(w_1 = 14.0 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_2 = 15.5 | \{ \mu = 17.0, \sigma=2.0 \}) \\ \times P(w_3 = 17.9 | \{ \mu = 17.0, \sigma=2.0 \}) \\ = 0.00175...$$
 
-In `example_nessie_v1.ipynb`, $P(\theta|\mu)$ is computed for a range of $\mu$ values for fixed standard deviation $\sigma=2.0$ yielding the following distribution:
+You can visualize the value of each of the factors in this product as the green dots on the current distribution curve:
+
+![image info](images/PDgiventheta_nessie_example.png)
+
+Clearly, this product is maximized when the distribution is centred around where the most data points reside.
+
+In `example_nessie_v1.ipynb`, $P(D|\mu)$ is computed for a range of $\mu$ values for fixed standard deviation $\sigma=2.0$ yielding the following distribution:
 
 ![image info](images/PDgivenmu_nessie_example.png)
 
