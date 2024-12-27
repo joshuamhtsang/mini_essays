@@ -1,1 +1,4 @@
 numpy
+swig
+gymnasium
+gymnasium[box2d]
