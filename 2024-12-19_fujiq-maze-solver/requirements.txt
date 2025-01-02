@@ -1,4 +1,6 @@
 numpy
+matplotlib
+opencv-python
 swig
 gymnasium
 gymnasium[box2d]
