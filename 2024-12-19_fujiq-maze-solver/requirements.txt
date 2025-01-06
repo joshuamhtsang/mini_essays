@@ -4,4 +4,4 @@ opencv-python
 scikit-image
 swig
 gymnasium
-gymnasium[box2d]
+#gymnasium[box2d]
