@@ -29,7 +29,7 @@ https://github.com/FRRouting/frr/blob/master/docker/ubuntu-ci/Dockerfile
 With some instructions on the Docker image build process:
 https://docs.frrouting.org/projects/dev-guide/en/latest/building-docker.html#
 
-In the cloned github repo directory frr/ (on the host):
+In the cloned github repo directory frr/ (on the host), run a frr container:
 ~~~
 $ docker build -t frr-ubuntu22:latest -f docker/ubuntu-ci/Dockerfile .
 
@@ -72,7 +72,42 @@ test_ospf_topo1.py ..........s                                           [100%]
 
 The frr repo contains an extensive set of tests.  They appear to be based off NetDEF tests, which is a CI for testing FRR.
 
-A simple test involving 2 hosts and 2 routers can be found in: `frr/tests/topotests/ospf_topo2/test_example.py`.  The tests are driven by mininet and sample 'frr.conf' files can be found which prove quite instructive.  I think frr.conf contain vtysh commands?
+A simple test involving 2 hosts and 2 routers can be found in: `frr/tests/topotests/example_test`. Run the tests in docker by using the image built above:
+
+~~~
+$ docker exec frr-ubuntu22 bash -c 'cd ~/frr/tests/topotests/example_test ; sudo pytest test_template.py'
+~~~
+
+The output is:
+~~~
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.3.5, pluggy-1.5.0
+rootdir: /home/frr/frr/tests/topotests
+configfile: pytest.ini
+plugins: xdist-3.6.1
+collected 5 items
+
+test_template.py ..xss                                                   [100%]
+
+=============================== warnings summary ===============================
+../../../../../../usr/local/lib/python3.10/dist-packages/_pytest/config/__init__.py:1441
+  /usr/local/lib/python3.10/dist-packages/_pytest/config/__init__.py:1441: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../../../../usr/local/lib/python3.10/dist-packages/_pytest/config/__init__.py:1441
+  /usr/local/lib/python3.10/dist-packages/_pytest/config/__init__.py:1441: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+--------------- generated xml file: /tmp/topotests/topotests.xml ---------------
+============= 2 passed, 2 skipped, 1 xfailed, 2 warnings in 3.08s ==============
+~~~
+
+
+
+The tests are driven by mininet and sample 'frr.conf' files can be found which prove quite instructive.  I think frr.conf contain vtysh commands?
 
 Some observations:
 
@@ -110,4 +145,8 @@ interface r1-eth2
 ~~~
 
 I think the image at: [https://github.com/FRRouting/frr/blob/master/tests/topotests/example_test/test_template.jpg] is now out-of-date.
+
+4.  The FRR documentation contains extensive notes on 'Topotests':
+
+https://docs.frrouting.org/projects/dev-guide/en/latest/topotests.html
 
