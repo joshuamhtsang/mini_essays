@@ -22,10 +22,14 @@ Barry Van Veen - shows the equivalence of different estimations of the optimal p
 
 There are several distinguishing features of Bayesian Inference compared to classical statistical analysis.  Here are a few features:
 
+- **Thinking of Bayesian analysis as an inverse process**
+  In *forward* modelling, we need just need one thing: a generative model + values for its corresponding parameters.  Say a Bernoulli process with values for the parameter $p$.  Using this, we can generate *data*.  For example, we might model the sign up rate for a magazine subscription campaign. We might assume the subscription rate is $p=0.2$ and then proceed to generate data for how many people sign up out of 100 people.  The data points might be, say: 13, 22, 25.  Although $p=0.2$, the stochastic nature of the model means the generated data is not always going to be 20 people.
+
+  Bayesian analysis is doing the inverse.  We start with the data points, then assume a model with corresponding parameters to work out the likely distribution of the sign up rate $p$.  If we have run 3 test campaigns with $n=100$ people in each, then we have 3 data points, say: $k = 43, 45, 51$.  We could use the Binomial distribution $f(k, n, p)$ and a Bayesian analysis will work out the distribution of the sign up rate given the data $f(p|D)$.  Uniquely, Bayesian analysis also allows the incorporation of prior beliefs on the distribution of the parameter, $f(p)$.
 - **Prior, Generative Model + Parameter(s), Data**:
   In the Baysian approach to statistics, one follows a recipe that composes of a 3 main things: the prior, the generative model with associated parameter(s) and the data itself.  
   
-  The prior, $P(\theta)$, provides a mechanism to incorporate our initial beliefs about how the value of the parameter is distributed. 
+  The prior, $P(\theta)$, provides a mechanism to incorporate our initial beliefs about how the value of the parameter is distributed. If we don't want to introduce any prior beliefs then one can simply assume $P(\theta) = 1$ i.e it is constant i.e a flat prior.
 
   A generative model and its associated parameter(s) must be selected before an analysis can commence. An example of a model is the Binomial distribution with its parameter $p$ which determines the probability of a positive result (e.g. a head in a coin flip).  As such, a Bayesian analysis will involve determining the likely distribution of $p$ given the observed data $D$ i.e. $P(\theta = p|D)$.
 
@@ -44,6 +48,7 @@ where $\theta$ are the parameters of a probability distribution and $D$ is the d
 
 $$ {\tt Posterior} = \frac{ {\tt Likelihood} \times {\tt Prior} }{ {\tt Margin} } $$
 
+Note how the Posterior is equal to the liklihood if the prior is flat.  
 
 ## Inferring the Distribution of the Parameters of a Probability Distribution
 
@@ -59,7 +64,7 @@ The question is, what is Nessie's most likely true weight?  We will assume the m
 
 $$ f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp \left( -\frac{(x-\mu)^2}{2\sigma ^2} \right) $$
 
-In this case, the parameters of the distribute are:
+In this case, the parameters of the distribution are:
 
 $$ \theta = \{ \mu, \sigma \} $$
 
@@ -87,7 +92,9 @@ Observe that the most likely value for the standard deviation $\sigma$ is around
 
 $$ \theta = \{ \mu = 16.0, \sigma = 1.6 \} $$
 
-
+Note that this single set of most optimal values of the parameters to fit the data could have been obtained through curve fitting.  However, this example shows how a Bayesian perspective computes the likely distribution of the parameters values in parameter space i.e $P(D|\mu)$.
 
 
 # Incorporating Prior Beliefs
+
+Note that Bayes theorem essentially equates the posterior, $P(\theta|D)$, and the likelihood, $P(D|\theta)$ i.e. what we calculated above, if our prior beliefs $P(\theta)$ are flat.  In fact, if we don't want to influence the posterior with our beliefs then the analysis above for the likelihood is essentially equivalent to computing the posterior, since we can just set the prior to a constant $P(\theta)=1$.
