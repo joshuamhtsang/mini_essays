@@ -19,22 +19,36 @@ def run_binom_demo_1():
 
 
 def run_transcendence_demo_1():
-    # Model
+    # Model a certain number of hours of hunting
 
     p = 0.0044 # Trigger chance 0.44% per turn
     n = 1800 # 1800 turns in 1 hour
-    hours = 14
+    hours = 300
 
     outcomes = np.zeros((hours, n))
     for i in range(hours):
         for j in range(n):
             outcome = stats.bernoulli.rvs(p, size=1)
-            print(outcome[0])
             outcomes[i][j] = outcome[0]
 
     plt.matshow(outcomes)
     plt.show()
 
+    # Compute number of triggers per hour and store in array
+
+    num_triggers = np.zeros(hours)
+    for i in range(hours):
+        num_triggers[i] = np.sum(outcomes[i, :])
+        print(num_triggers)
+    
+    num_bins = 20
+    hist, bin_edges = np.histogram(num_triggers, bins=np.arange(0, num_bins))
+    print(hist)
+
+    plt.bar(np.arange(0, num_bins-1), hist, width=0.3)
+    plt.show()
+
+    # Compute Poisson for number of triggers in an hour for p = 0.0044
 
 
 
