@@ -13,5 +13,7 @@ And to run the scripts do:
 $ uv run main.py
 ~~~
 
-#  
+# Commentary on the Python scripts
+
+
 
