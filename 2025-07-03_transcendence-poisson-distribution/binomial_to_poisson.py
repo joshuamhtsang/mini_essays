@@ -21,14 +21,15 @@ def run_transcendence_demo_1():
 
     p = 0.0044 # Trigger chance 0.44% per turn
     n = 1800 # 1800 turns in 1 hour
-    hours = 1000 # Number of hours of hunting
+    hours = 10000 # Number of hours of hunting
 
     outcomes = np.zeros((hours, n))
+    bernoulli_rolls = stats.bernoulli.rvs(p, size=n*hours)
+
     for i in range(hours):
-        print("Simulating hour = ", i)
         for j in range(n):
-            outcome = stats.bernoulli.rvs(p, size=1)
-            outcomes[i][j] = outcome[0]
+            outcome = bernoulli_rolls[i*n+j]
+            outcomes[i][j] = outcome
 
     plt.matshow(outcomes)
     plt.show()
