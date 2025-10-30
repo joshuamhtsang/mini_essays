@@ -29,4 +29,5 @@
 
     You're now runnning Sionna, well done!
 
-    
+6.  Next steps:
+    Try running the tutorial ipynb notebooks in the Sionna repo.
