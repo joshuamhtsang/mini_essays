@@ -24,6 +24,8 @@
 5.  Test the installation:  
     Restart the VS Code terminal run `python` ensuring it's using the 3.11.9 interpreter.  Then try:
 
+    WARNING: Update 2025-10-30, the `sionna.__version__` no longer works as of version 1.2.1 of Sionna.
+
     ~~~
     >>> import sionna
     >>> print(sionna.__version__)
@@ -33,5 +35,25 @@
     You're now runnning Sionna, well done!
 
 
-## Installing in Ubuntu 24.04
+## Installing in Ubuntu 24.04 using `uv`
 
+Initiate the uv project:
+~~~
+$ uv init
+~~~
+
+Add the sionna package to a venv:
+~~~
+$ uv add sionna
+~~~
+
+Show the version of sionna installed:
+~~~
+$ uv pip show sionna
+Name: sionna
+Version: 1.2.1
+~~~
+
+~~~
+$ uv run test_1.py
+~~~
