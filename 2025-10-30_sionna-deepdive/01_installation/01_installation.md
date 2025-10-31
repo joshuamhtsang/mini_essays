@@ -54,11 +54,11 @@ Name: sionna
 Version: 1.2.1
 ~~~
 
-## Basic Test for Running Sionna (version 1.2.1)
+## Basic Test for Running Sionna (Version 1.2.1 in October 2025)
 
 https://nvlabs.github.io/sionna/phy/tutorials/Hello_World.html
 
 ~~~
-$ uv run test_1.py
+$ uv run main.py
 ~~~
 
