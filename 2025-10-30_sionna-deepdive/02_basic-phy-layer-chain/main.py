@@ -25,7 +25,7 @@ if __name__ == "__main__":
     constellation.show()
     plt.show()
 
-    print(constellation)
+    print("constellation = ", constellation.points)
 
     # Step 2: Define the mapper and demapper
     mapper = sionna.phy.mapping.Mapper(constellation=constellation)
