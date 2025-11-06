@@ -27,7 +27,11 @@ The important objects are shown below.
 
 ## Adding a Noisy Channel
 
+- Add noise using the function `ebnodb2no()`
+
 ![image](./images/basic_sionna_chain_with_channel.png)
+
+- `llr` is the log-likelihood ratio tensor.
 
 ## Demapper 'hard-out' Option
 
