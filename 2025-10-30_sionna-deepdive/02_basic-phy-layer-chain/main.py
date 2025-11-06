@@ -46,19 +46,24 @@ if __name__ == "__main__":
     symbols = mapper(bits)
     print(symbols)
 
-    no = sionna.phy.utils.ebnodb2no(ebno_db=10.0, num_bits_per_symbol=NUM_BITS_PER_SYMBOL, coderate=1.0)
+    # Define channel
+    ebno_db = -1.0
+    no = sionna.phy.utils.ebnodb2no(ebno_db=ebno_db, num_bits_per_symbol=NUM_BITS_PER_SYMBOL, coderate=1.0)
+    print("ebno_db = ", ebno_db, ", no = ", no)
 
-    decoded_bits = demapper(symbols, no)
+    awgn_channel = sionna.phy.channel.AWGN()
+    noisy_symbols = awgn_channel(symbols, no)
+
+    decoded_bits = demapper(noisy_symbols, no)
     print(decoded_bits)
 
     # Plot post-channel symbols
     plt.figure(figsize=(8,8))
     plt.axes().set_aspect(1)
     plt.grid(True)
-    plt.title('Channel output')
+    plt.title(f'Noisy Symbols at ebno = {ebno_db} dB')
     plt.xlabel('Real Part')
     plt.ylabel('Imaginary Part')
-    plt.scatter(tf.math.real(symbols), tf.math.imag(symbols))
+    plt.scatter(tf.math.real(noisy_symbols), tf.math.imag(noisy_symbols))
     plt.tight_layout()
     plt.show()
-
