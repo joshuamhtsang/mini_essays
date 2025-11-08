@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     bits = binary_source([BATCH_SIZE, 256]) # Blocklength
     print("Shape of bits: ", bits.shape)
-    print(bits)
+    print("bits = \n", bits)
 
     symbols = mapper(bits)
     print(symbols)
@@ -54,10 +54,10 @@ if __name__ == "__main__":
     awgn_channel = sionna.phy.channel.AWGN()
     noisy_symbols = awgn_channel(symbols, no)
 
-    decoded_bits = demapper(noisy_symbols, no)
-    print(decoded_bits)
+    llr = demapper(noisy_symbols, no)
+    print(llr)
 
-    # Plot post-channel symbols
+    # Plot noisy symbols
     plt.figure(figsize=(8,8))
     plt.axes().set_aspect(1)
     plt.grid(True)
@@ -67,3 +67,36 @@ if __name__ == "__main__":
     plt.scatter(tf.math.real(noisy_symbols), tf.math.imag(noisy_symbols))
     plt.tight_layout()
     plt.show()
+
+    # Loop through several values of ebno_db
+
+    # Lists for BER vs ebno plot
+    x_vals_ebno = []
+    y_vals_ber = []
+
+    for ebno_db in range(-5, 10, 2):
+        no = sionna.phy.utils.ebnodb2no(ebno_db=ebno_db, num_bits_per_symbol=NUM_BITS_PER_SYMBOL, coderate=1.0)
+        print("ebno_db = ", ebno_db, ", no = ", no)
+        noisy_symbols = awgn_channel(symbols, no)
+        llr = demapper(noisy_symbols, no)
+
+        # Compute bit error rate (BER)
+        decoded_bits = sionna.phy.utils.hard_decisions(llr)
+        #print("decoded_bits = \n", decoded_bits)
+        ber = sionna.phy.utils.compute_ber(bits, decoded_bits)
+        print("ber = ", ber)
+        x_vals_ebno.append(ebno_db)
+        y_vals_ber.append(ber.numpy())
+
+        # Plot post-channel symbols
+        plt.figure(figsize=(8,8))
+        plt.axes().set_aspect(1)
+        plt.grid(True)
+        plt.title(f'Noisy Symbols at ebno = {ebno_db} dB')
+        plt.xlabel('Real Part')
+        plt.ylabel('Imaginary Part')
+        plt.scatter(tf.math.real(noisy_symbols), tf.math.imag(noisy_symbols))
+        plt.tight_layout()
+        plt.savefig(f'noisy_symbols_{ebno_db}.png')
+    
+    print(x_vals_ebno, y_vals_ber)
