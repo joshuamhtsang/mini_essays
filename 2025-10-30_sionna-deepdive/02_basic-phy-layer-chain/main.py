@@ -24,6 +24,7 @@ if __name__ == "__main__":
     print(type(constellation))
     constellation.show()
     plt.show()
+    plt.close()
 
     print("constellation = ", constellation.points)
 
@@ -67,6 +68,8 @@ if __name__ == "__main__":
     plt.scatter(tf.math.real(noisy_symbols), tf.math.imag(noisy_symbols))
     plt.tight_layout()
     plt.show()
+    plt.clf()
+    plt.close()
 
     # Loop through several values of ebno_db
 
@@ -74,7 +77,7 @@ if __name__ == "__main__":
     x_vals_ebno = []
     y_vals_ber = []
 
-    for ebno_db in range(-5, 10, 2):
+    for ebno_db in range(-10, 10, 2):
         no = sionna.phy.utils.ebnodb2no(ebno_db=ebno_db, num_bits_per_symbol=NUM_BITS_PER_SYMBOL, coderate=1.0)
         print("ebno_db = ", ebno_db, ", no = ", no)
         noisy_symbols = awgn_channel(symbols, no)
@@ -88,7 +91,7 @@ if __name__ == "__main__":
         x_vals_ebno.append(ebno_db)
         y_vals_ber.append(ber.numpy())
 
-        # Plot post-channel symbols
+        # Plot noisy symbols
         plt.figure(figsize=(8,8))
         plt.axes().set_aspect(1)
         plt.grid(True)
@@ -97,6 +100,18 @@ if __name__ == "__main__":
         plt.ylabel('Imaginary Part')
         plt.scatter(tf.math.real(noisy_symbols), tf.math.imag(noisy_symbols))
         plt.tight_layout()
-        plt.savefig(f'noisy_symbols_{ebno_db}.png')
+        #plt.savefig(f'noisy_symbols_{ebno_db}.png')
+        plt.clf()
+        plt.close()
     
     print(x_vals_ebno, y_vals_ber)
+
+    plt.grid(True)
+    plt.title(f'BER vs ebno plot for QAM at {NUM_BITS_PER_SYMBOL} bits per symbol')
+    plt.xlabel('ebno (dB)')
+    plt.ylabel('BER')
+    plt.scatter(x_vals_ebno, y_vals_ber)
+    plt.yscale('log')
+    plt.show()
+    plt.clf()
+    plt.close()

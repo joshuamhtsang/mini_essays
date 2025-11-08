@@ -42,4 +42,6 @@ The figure below shows the amount of noise introduced into the constellation for
 
 You can see that at `ebno` = -3 dB it's not even clear that we are using 4-QAM.
 
+## BER vs `ebno` plot
 
+![iamge](./images/ber_vs_ebno.png)
