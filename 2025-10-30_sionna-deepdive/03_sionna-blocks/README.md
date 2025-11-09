@@ -7,5 +7,7 @@
 
 # Introducing Sionna blocks
 
-``
+![Image](./images/sionna_chain_with_fec.png)
+
+
 
