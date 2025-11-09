@@ -21,15 +21,18 @@ The important objects are shown in the figure below.
 
 ![image](./images/basic_sionna_objects.png)
 
+Note that the constellation shown in the figure is for BPSK, but the example below uses 4-QAM.
+
 ## No Noisy Channel
 
-The figure below shows the components that compose a basic physical layer chain works in Sionna. Note this isn't using the concept of Sionna blocks yet.
+The figure below shows the components that compose a basic physical layer chain works in Sionna. Note this isn't using the concept of Sionna blocks yet (see next chapter [here](../03_sionna-blocks/README.md)).
 
 ![image](./images/basic_sionna_chain.png)
 
 ## Adding a Noisy Channel
 
-- Compute a noise variance, `no`, for a given EbN0 ratio using the function `ebnodb2no()`.
+- Noise is introduced using various channel models such as `sionna.phy.channel.AWGN()`.
+- The channel object is initiated with a noise variance, `no`. Convert between an EbN0 ratio and `no` using the function `ebnodb2no()`.
 
 ![image](./images/basic_sionna_chain_with_channel.png)
 
@@ -40,8 +43,14 @@ The figure below shows the amount of noise introduced into the constellation for
 
 ![image](./images/constellation_vs_ebno.png)
 
-You can see that at `ebno` = -3 dB it's not even clear that we are using 4-QAM.
+You can see that at `ebno` = -3 dB (signal power is roughly half the noise power) it's not even visually clear that we are using 4-QAM.  However we shall see that 
 
 ## BER vs `ebno` plot
 
-![iamge](./images/ber_vs_ebno.png)
+The following figure is the BER vs EbN0 plot for 4-QAM without any forward error correction (FEC). Note the curve is not quite smooth, which can be resolved using a larger `BATCH_SIZE`.
+
+![image](./images/ber_vs_ebno.png)
+
+Note a few things:
+- At EbN0 = -3 dB, the BER is between 0.1 and 0.2 i.e 10% to 20% bit errors. This might be counter intuitive, as a -3 dB ratio means the energy power per bit is roughly half that of the noise.
+- In the limit of small EbN0 ratios, the BER seems to converge towards a value of ~0.33 i.e 33% buts are erroneous.
