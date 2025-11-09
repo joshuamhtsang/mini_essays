@@ -11,6 +11,6 @@ if __name__ == "__main__":
         os.environ["CUDA_VISIBLE_DEVICES"] = f"{gpu_num}"
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-    print("Number of gpus detected:", gpu_num)
+    print("gpu_num:", gpu_num)
 
     main()
