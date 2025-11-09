@@ -10,7 +10,10 @@
 
 2.  Use gitbash to clone the Sionna github repo:
 
-    `$ git clone https://github.com/NVlabs/sionna.git`
+    ~~~
+    $ git clone https://github.com/NVlabs/sionna.git
+    ~~~
+
 
 3.  Install Python 3.11.9:  
     At the time of writing, the latest Python version is Python 3.13.x, so it's likely you'll need to find the older version as the later versions of Python like 3.12.x do not have the compatible Tensorflow version in pip.  Find the appropriate Windows installer here:  https://www.python.org/downloads/windows/
@@ -21,13 +24,49 @@
 5.  Test the installation:  
     Restart the VS Code terminal run `python` ensuring it's using the 3.11.9 interpreter.  Then try:
 
-    ```
+    WARNING: Update 2025-10-30, the `sionna.__version__` no longer works as of version 1.2.1 of Sionna.
+
+    ~~~
     >>> import sionna
     >>> print(sionna.__version__)
     0.19.1
-    ```
+    ~~~
 
     You're now runnning Sionna, well done!
 
-6.  Next steps:
-    Try running the tutorial ipynb notebooks in the Sionna repo.
+
+## Installing in Ubuntu 24.04 using `uv`
+
+Initiate the uv project:
+~~~
+$ uv init
+~~~
+
+Add the sionna package to a venv:
+~~~
+$ uv add sionna
+~~~
+
+Show the version of sionna installed:
+~~~
+$ uv pip show sionna
+Name: sionna
+Version: 1.2.1
+~~~
+
+Note that you should NOT do the following:
+
+~~~
+$ uv add numpy matplotlib ... sionna
+~~~
+
+as this seems to install the older Sionna version 0.8 instead.
+
+## Basic Test for Running Sionna (Version 1.2.1 in October 2025)
+
+https://nvlabs.github.io/sionna/phy/tutorials/Hello_World.html
+
+~~~
+$ uv run main.py
+~~~
+
