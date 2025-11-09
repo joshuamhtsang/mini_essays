@@ -54,6 +54,14 @@ Name: sionna
 Version: 1.2.1
 ~~~
 
+Note that you should NOT do the following:
+
+~~~
+$ uv add numpy matplotlib ... sionna
+~~~
+
+as this seems to install the older Sionna version 0.8 instead.
+
 ## Basic Test for Running Sionna (Version 1.2.1 in October 2025)
 
 https://nvlabs.github.io/sionna/phy/tutorials/Hello_World.html
