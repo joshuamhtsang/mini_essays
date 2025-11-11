@@ -47,10 +47,11 @@ You can see that at `ebno` = -3 dB (signal power is roughly half the noise power
 
 ## BER vs `ebno` plot
 
-The following figure is the BER vs EbN0 plot for 4-QAM without any forward error correction (FEC). Note the curve is not quite smooth, which can be resolved using a larger `BATCH_SIZE`.
+The following figure is the BER vs EbN0 plot for 4-QAM without any forward error correction (FEC) i.e. encoding. Note the curve is not quite smooth, which can be resolved using a larger `BATCH_SIZE`.
 
 ![image](./images/ber_vs_ebno.png)
 
 Note a few things:
 - At EbN0 = -3 dB, the BER is between 0.1 and 0.2 i.e 10% to 20% bit errors. This might be counter intuitive, as a -3 dB ratio means the energy power per bit is roughly half that of the noise.
 - In the limit of small EbN0 ratios, the BER seems to converge towards a value of ~0.33 i.e 33% buts are erroneous.
+- There is no encoding for FEC in the current comms chain, hence this set of results in labelled 'uncoded'. Encoding is adding in the next chapter when using Sionna Blocks.
